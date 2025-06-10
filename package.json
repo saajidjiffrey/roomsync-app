@@ -36,6 +36,7 @@
     "react-redux": "^9.2.0",
     "react-router": "^5.3.4",
     "react-router-dom": "^5.3.4",
+    "redux-persist": "^6.0.0",
     "tailwindcss": "^4.1.8"
   },
   "devDependencies": {
