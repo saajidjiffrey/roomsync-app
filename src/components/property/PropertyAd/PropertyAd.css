@@ -7,3 +7,7 @@ ion-label strong {
 ion-label ion-note {
   /* font-size: 0.9rem; */
 }
+
+ion-chip{
+  font-size: 0.8rem;
+}

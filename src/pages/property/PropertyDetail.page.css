@@ -1,0 +1,13 @@
+ion-img{
+  height: 60%;
+  object-fit: cover;
+}
+
+.button-container{
+  display: flex;
+  flex-direction: row;
+}
+
+.button-container ion-button{
+  width: 50%;
+}

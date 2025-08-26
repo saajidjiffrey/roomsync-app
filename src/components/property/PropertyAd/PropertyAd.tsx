@@ -1,15 +1,15 @@
-import { IonAvatar, IonChip, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonLabel, IonNote, IonText } from '@ionic/react';
+import { IonAvatar, IonChip, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonLabel, IonNote } from '@ionic/react';
 import React from 'react';
-import './PropertyCard.css';
+import './PropertyAd.css';
 
-const PropertyCard: React.FC = () => {
+const PropertyAd: React.FC = () => {
 
   return (
     <IonItemSliding>
       <IonItemOptions side="start">
         <IonItemOption color="success">Archive</IonItemOption>
       </IonItemOptions>
-      <IonItem button={true} detail={true} href='/owner/property-details' routerDirection='forward'>
+      <IonItem button={true} detail={true}>
         <IonAvatar aria-hidden="true" slot="start" className='property-avatar ion-align-self-start avatar-square'>
           <img alt="" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
         </IonAvatar>
@@ -19,23 +19,16 @@ const PropertyCard: React.FC = () => {
             123, King's street, Kandy
           </IonNote>
           <br />
-          <IonText color="primary" className='ion-text-wrap'>
-            <p>
-              02 remaining spaces available
-            </p>
-          </IonText>
-          <div>
-            <IonChip color="dark">AC Room</IonChip>
-            <IonChip color="dark">AC Room</IonChip>
-          </div>
+          
+          <IonChip color="secondary">Looking for 1 tenant(s)</IonChip>
         </IonLabel>
       </IonItem>
       <IonItemOptions side="end">
         <IonItemOption>Favorite</IonItemOption>
         <IonItemOption color="danger">Delete</IonItemOption>
       </IonItemOptions>
-    </IonItemSliding>
+      </IonItemSliding>
   );
 };
 
-export default PropertyCard;
+export default PropertyAd;

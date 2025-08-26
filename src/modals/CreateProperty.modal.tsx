@@ -1,0 +1,224 @@
+import React, { useRef } from 'react';
+import {
+  IonButtons,
+  IonButton,
+  IonHeader,
+  IonContent,
+  IonToolbar,
+  IonTitle,
+  IonPage,
+  IonItem,
+  IonInput,
+  IonImg,
+  IonIcon,
+  IonList,
+  IonListHeader,
+  IonLabel,
+  IonTextarea,
+  IonChip,
+} from '@ionic/react';
+import { addOutline, cameraOutline, checkmarkCircle, closeOutline, locationOutline } from 'ionicons/icons';
+import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
+
+const CreatePropertyModal = ({ dismiss }: { dismiss: (data?: string | null | undefined | number, role?: string) => void }) => {
+  const inputRef = useRef<HTMLIonInputElement>(null);
+  return (
+    <IonPage>
+      <IonHeader>
+        <IonToolbar>
+          <IonButtons slot="start">
+            <IonButton color="medium" onClick={() => dismiss(null, 'cancel')}>
+              Cancel
+            </IonButton>
+          </IonButtons>
+          <IonTitle>Create Property</IonTitle>
+          <IonButtons slot="end">
+            <IonButton onClick={() => dismiss(inputRef.current?.value, 'confirm')} strong={true}>
+              Confirm
+            </IonButton>
+          </IonButtons>
+        </IonToolbar>
+      </IonHeader>
+      <IonContent className="ion-padding">
+        <div style={{ position: 'relative' }}>
+          <IonImg
+            src={'https://placehold.co/400'}
+            alt="Property Image"
+            style={{ height: '200px', objectFit: 'cover' }}
+          />
+          <IonButton
+            fill="solid"
+            size="small"
+            style={{
+              position: 'absolute',
+              bottom: '10px',
+              right: '10px',
+              '--background': '#3880ff',
+              '--color': 'white',
+              '--border-radius': '50%',
+              width: '40px',
+              height: '40px'
+            }}
+          >
+            <IonIcon icon={cameraOutline} />
+          </IonButton>
+        </div>
+        
+        <IonList mode='ios' lines='inset' className='input-wrapper ion-padding-vertical'>
+          <IonListHeader className='ion-margin-bottom'>
+            <IonLabel>Property Details</IonLabel>
+          </IonListHeader>
+          
+          <IonItem>
+            <IonInput 
+              labelPlacement="stacked" 
+              mode='md' 
+              type='text' 
+              label="Property Name" 
+              placeholder="Enter Property name"
+            />
+          </IonItem>
+          
+          <IonItem>
+            <IonInput 
+              labelPlacement="stacked" 
+              mode='md' 
+              type='text' 
+              label="Address" 
+              placeholder="Enter Address"
+            />
+          </IonItem>
+          
+          <IonItem>
+            <IonTextarea 
+              label="Description" 
+              labelPlacement="stacked" 
+              rows={5}
+              placeholder="Enter property description"
+            />
+          </IonItem>
+          
+          <IonItem>
+            <IonInput 
+              labelPlacement="stacked" 
+              mode='md' 
+              type='number' 
+              label="Available slots" 
+              placeholder="Enter Available slots"
+            />
+          </IonItem>
+        </IonList>
+
+        <IonList mode='ios' lines='inset' className='input-wrapper ion-padding-vertical'>
+          <IonListHeader className='ion-margin-bottom'>
+            <IonLabel>Tags</IonLabel>
+            <IonButton 
+              fill="clear" 
+              size="small" 
+            >
+              <IonIcon icon={addOutline} slot="icon-only" />
+            </IonButton>
+          </IonListHeader>
+          
+          <IonItem>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', width: '100%' }}>
+              {['tag1', 'tag2', 'tag3'].map((tag, index) => (
+                <IonChip key={index} color="primary">
+                  <IonLabel>{tag}</IonLabel>
+                  <IonIcon 
+                    icon={closeOutline} 
+                    style={{ cursor: 'pointer' }}
+                  />
+                </IonChip>
+              ))}
+              {['tag1', 'tag2', 'tag3'].length === 0 && (
+                <IonLabel color="medium">No tags added yet</IonLabel>
+              )}
+            </div>
+          </IonItem>
+        </IonList>
+
+        <IonList mode='ios' lines='inset' className='input-wrapper ion-padding-vertical'>
+          <IonListHeader className='ion-margin-bottom'>
+            <IonLabel>Property Location</IonLabel>
+          </IonListHeader>
+          
+          <IonItem>
+            <div className="map-container" style={{ width: '100%', height: '300px', position: 'relative' }}>
+              <MapContainer
+                center={[6.9271, 79.8612]}
+                zoom={13}
+                style={{ 
+                  width: '100%', 
+                  height: '100%', 
+                  borderRadius: '8px',
+                  border: '1px solid #ddd'
+                }}
+              >
+                <TileLayer
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                />
+                                
+                {true && (
+                  <Marker position={[6.9271, 79.8612]}>
+                    <Popup>
+                      <div>
+                        <strong>Selected Property Location</strong>
+                        <br />
+                        Lat: {6.9271.toFixed(6)}
+                        <br />
+                        Lng: {79.8612.toFixed(6)}
+                      </div>
+                    </Popup>
+                  </Marker>
+                )}
+              </MapContainer>
+              
+              <div 
+                style={{ 
+                  position: 'absolute', 
+                  bottom: '10px', 
+                  right: '10px', 
+                  zIndex: 1000 
+                }}
+              >
+                <IonButton 
+                  fill="solid" 
+                  size="small" 
+                  onClick={() => {}}
+                  style={{ 
+                    '--background': '#3880ff',
+                    '--color': 'white',
+                    '--border-radius': '50%',
+                    width: '40px',
+                    height: '40px'
+                  }}
+                >
+                  <IonIcon icon={locationOutline} />
+                </IonButton>
+              </div>
+            </div>
+          </IonItem>
+          
+          {true && (
+            <IonItem>
+              <IonLabel>
+                <h3>Selected Location</h3>
+                <p>Latitude: {6.9271.toFixed(6)}</p>
+                <p>Longitude: {79.8612.toFixed(6)}</p>
+                {true && (
+                  <p>Address: {'123, King\'s street, Kandy'}</p>
+                )}
+              </IonLabel>
+              <IonIcon icon={checkmarkCircle} color="success" slot="end" />
+            </IonItem>
+          )}
+        </IonList>
+        
+      </IonContent>
+    </IonPage>
+  );
+};
+
+export default CreatePropertyModal;

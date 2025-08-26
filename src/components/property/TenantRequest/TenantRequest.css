@@ -1,0 +1,23 @@
+ion-label strong {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+ion-label ion-note {
+  font-size: 0.9rem;
+}
+
+ion-label span {
+  color: var(--ion-color-secondary);
+  font-weight: 600;
+}
+
+.user-avatar {
+  margin-top: 0.8rem;
+  margin-bottom: 0.5rem;
+}
+
+ion-chip{
+  font-size: 0.8rem;
+}

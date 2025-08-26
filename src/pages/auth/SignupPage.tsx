@@ -42,7 +42,7 @@ const SignupPage: React.FC = () => {
           </IonItem>     
         </IonList>
       </IonContent>
-      <IonFooter className='ion-padding'>
+      <IonFooter className='ion-padding ion-no-border'>
         <IonButton shape="round" size='default' expand="block">Signup</IonButton>
       </IonFooter>
     </IonPage>

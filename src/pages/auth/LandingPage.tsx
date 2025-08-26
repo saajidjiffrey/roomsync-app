@@ -20,8 +20,8 @@ const LandingPage: React.FC = () => {
           </IonText>
         </div>
       </IonContent> 
-      <IonFooter className='ion-padding'>
-        <div className='button-container'>
+      <IonFooter className='ion-padding ion-no-border'>
+        <div className=''>
           <IonButton shape="round" routerLink="/signup" expand="block">Sign Up</IonButton>
           <IonButton shape="round" routerLink="/login" expand='block'>Login</IonButton>
         </div>
