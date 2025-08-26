@@ -34,8 +34,16 @@ ion-chip{
 }
 
 .group-avatar {
-  height: 4rem !important;
-  width: 4rem !important;
+  height: 2.5rem !important;
+  width: 2.5rem !important;
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
+}
+
+.d-flex {
+  display: flex !important;
+}
+
+.gap-2 {
+  gap: 0.5rem !important;
 }

@@ -1,7 +1,8 @@
-import { IonContent, IonHeader, IonList, IonPage, IonTitle, IonToolbar } from "@ionic/react"
+import { IonContent, IonFab, IonFabButton, IonHeader, IonLabel, IonList, IonPage, IonTitle, IonToolbar } from "@ionic/react"
 import PropertyCard from "../../../components/property/PropertyCard/PropertyCard"
 
 const FindProperty = () => {
+  
   return (
     <IonPage>
       <IonHeader>
@@ -22,6 +23,11 @@ const FindProperty = () => {
           <PropertyCard />
           <PropertyCard />
         </IonList>
+        <IonFab vertical="bottom" horizontal="end" slot="fixed" >
+          <IonFabButton routerLink="/tenant/select-group">
+            <IonLabel>test</IonLabel>
+          </IonFabButton>
+        </IonFab>
       </IonContent>
     </IonPage>
   )
