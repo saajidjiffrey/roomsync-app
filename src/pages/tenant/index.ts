@@ -3,3 +3,4 @@ export { default as PropertyRequestsPage } from './property/PropertyRequests.pag
 export { default as TenantPropertyDetailPage } from './property/TenantPropertyDetail.page';
 
 export { default as SelectGroupPage } from './groups/SelectGroup.page';
+export { default as GroupDetailPage } from './groups/GroupDetail.page';

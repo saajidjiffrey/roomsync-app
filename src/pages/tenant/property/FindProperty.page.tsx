@@ -24,7 +24,7 @@ const FindProperty = () => {
           <PropertyCard />
         </IonList>
         <IonFab vertical="bottom" horizontal="end" slot="fixed" >
-          <IonFabButton routerLink="/tenant/select-group">
+          <IonFabButton routerLink="/tenant/group-detail">
             <IonLabel>test</IonLabel>
           </IonFabButton>
         </IonFab>

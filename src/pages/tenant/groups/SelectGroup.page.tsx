@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  IonButtons,
   IonButton,
   IonHeader,
   IonContent,
@@ -40,11 +39,6 @@ const SelectGroup = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonButtons slot="start">
-            <IonButton color="medium" onClick={() => {}}>
-              Cancel
-            </IonButton>
-          </IonButtons>
           <IonTitle>Select Group</IonTitle>
         </IonToolbar>
       </IonHeader>
