@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
-import { FindPropertyPage, PropertyRequestsPage, TenantPropertyDetailPage, SelectGroupPage, GroupDetailPage } from '../pages/tenant';
+import { FindPropertyPage, PropertyRequestsPage, TenantPropertyDetailPage, SelectGroupPage, GroupDetailPage, TenantHome, TenantExpenses, ExpenseDetailPage } from '../pages/tenant';
 
 const TenantRoutes: React.FC = () => {
   return (
@@ -21,6 +21,15 @@ const TenantRoutes: React.FC = () => {
       </Route>
       <Route path="/tenant/group-detail">
         <GroupDetailPage />
+      </Route>
+      <Route path="/tenant/home">
+        <TenantHome />
+      </Route>
+      <Route path="/tenant/expenses">
+        <TenantExpenses />
+      </Route>
+      <Route path="/tenant/expenses-detail">
+        <ExpenseDetailPage />
       </Route>
     </>
   );

@@ -1,9 +1,6 @@
 import {
-  IonAvatar,
-  IonChip,
   IonContent,
   IonImg,
-  IonItem,
   IonLabel,
   IonList,
   IonListHeader,
@@ -11,6 +8,7 @@ import {
   IonText,
 } from '@ionic/react';
 import './GroupDetail.css';
+import RoommateCard from '../../../components/roommate/RoommateCard';
 
 const GroupDetail: React.FC = () => {
   return (
@@ -36,28 +34,8 @@ const GroupDetail: React.FC = () => {
             <IonLabel>Group Members</IonLabel>
           </IonListHeader>
 
-          <IonItem button={true} detail={true}>
-            <IonAvatar aria-hidden="true" slot="start" className='user-avatar ion-align-self-start avatar-square'>
-              <img alt="" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
-            </IonAvatar>
-            <IonLabel className='ion-align-self-start'>
-              <strong>Roommate #1</strong>
-              <div>
-                <IonChip color="primary">Occupation</IonChip>
-              </div>
-            </IonLabel>
-          </IonItem>
-          <IonItem button={true} detail={true}>
-            <IonAvatar aria-hidden="true" slot="start" className='user-avatar ion-align-self-start avatar-square'>
-              <img alt="" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
-            </IonAvatar>
-            <IonLabel className='ion-align-self-start'>
-              <strong>Roommate #1</strong>
-              <div>
-                <IonChip color="primary">Occupation</IonChip>
-              </div>
-            </IonLabel>
-          </IonItem>
+          <RoommateCard showCheckbox={false} />
+          <RoommateCard showCheckbox={false} />
         </IonList>
         
       </IonContent>

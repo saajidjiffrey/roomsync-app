@@ -47,3 +47,7 @@ ion-chip{
 .gap-2 {
   gap: 0.5rem !important;
 }
+
+.receipt-image{
+  height: 6rem !important;
+} 
