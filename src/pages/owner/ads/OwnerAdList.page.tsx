@@ -18,16 +18,13 @@ import {
 import { add } from 'ionicons/icons';
 import { PropertyAd } from '../../../components/property/PropertyAd';
 import { useRef } from 'react';
+import PageHeader from '../../../components/common/PageHeader';
 
 const OwnerAdsPage: React.FC = () => {
   const modal = useRef<HTMLIonModalElement>(null);
   return (
     <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle >My Ads</IonTitle>
-        </IonToolbar>
-      </IonHeader>
+      <PageHeader title="My Ads" />
       <IonContent fullscreen>
         <IonHeader collapse="condense">
           <IonToolbar>

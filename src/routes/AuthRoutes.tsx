@@ -1,19 +1,15 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
-import { SignupPage, LandingPage, LoginPage } from '../pages/auth';
+import { LandingPage, LoginPage, SignupPage } from '../pages/auth';
+import TestPage from '../pages/TestPage';
 
 const AuthRoutes: React.FC = () => {
   return (
     <>
-      <Route path="/landing">
-        <LandingPage />
-      </Route>
-      <Route path="/signup">
-        <SignupPage />
-      </Route>      
-      <Route path="/login">
-        <LoginPage />
-      </Route>
+      <Route path="/landing" component={LandingPage} />
+      <Route path="/login" component={LoginPage} />
+      <Route path="/signup" component={SignupPage} />
+      <Route path="/test" component={TestPage} />
     </>
   );
 };

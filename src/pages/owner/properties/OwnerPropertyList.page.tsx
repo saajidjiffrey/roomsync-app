@@ -14,6 +14,7 @@ import { PropertyCard } from '../../../components/property/PropertyCard';
 import { add } from 'ionicons/icons';
 import { OverlayEventDetail } from '@ionic/react/dist/types/components/react-component-lib/interfaces';
 import CreatePropertyModal from '../../../modals/CreateProperty.modal';
+import PageHeader from '../../../components/common/PageHeader';
 
 const OwnerPropertyPage: React.FC = () => {
   const [present, dismiss] = useIonModal(CreatePropertyModal, {
@@ -31,11 +32,7 @@ const OwnerPropertyPage: React.FC = () => {
   }
   return (
     <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle >My Properties</IonTitle>
-        </IonToolbar>
-      </IonHeader>
+      <PageHeader title="My Properties" />
       <IonContent fullscreen>
         <IonHeader collapse="condense">
           <IonToolbar>

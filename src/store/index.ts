@@ -3,16 +3,18 @@ import { persistStore, persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 
 import counterReducer from './slices/counterSlice'
+import authReducer from './slices/authSlice'
 
 const rootReducer = combineReducers({
   counter: counterReducer,
+  auth: authReducer,
 })
 
 const persistConfig = {
   key: 'roomSyncApp', // unique key for your app
   storage,
-  whitelist: ['counter'], // include these reducers in persistence
-  blacklist: [], // exclude these reducers from persistence
+  whitelist: ['auth'], // include auth reducer in persistence
+  blacklist: ['counter'], // exclude counter from persistence
 }
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

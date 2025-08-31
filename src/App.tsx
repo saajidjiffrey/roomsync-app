@@ -1,15 +1,19 @@
 import {
   IonApp,
-  IonIcon,
-  IonLabel,
   IonRouterOutlet,
-  IonTabBar,
-  IonTabButton,
-  IonTabs,
   setupIonicReact
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { ellipse, square, triangle } from 'ionicons/icons';
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
+import { store, persistor } from './store';
+import { useEffect } from 'react';
+import { useAppDispatch } from './store/hooks';
+import { initializeAuth } from './store/slices/authSlice';
+import { useAuth } from './hooks/useAuth';
+import OwnerLayout from './components/layouts/OwnerLayout';
+import TenantLayout from './components/layouts/TenantLayout';
+import AdminLayout from './components/layouts/AdminLayout';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -44,30 +48,57 @@ import AppRoutes from './routes/AppRoutes';
 
 setupIonicReact();
 
+// Auth initializer component
+const AuthInitializer: React.FC = () => {
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(initializeAuth());
+  }, [dispatch]);
+
+  return null;
+};
+
+// Main app component
+const AppContent: React.FC = () => {
+  const { isAuthenticated, userRole } = useAuth();
+
+  const renderRoleBasedLayouts = () => {
+    switch (userRole) {
+      case 'owner':
+        return <OwnerLayout />;
+      case 'tenant':
+        return <TenantLayout />;
+      case 'admin':
+        return <AdminLayout />;
+      default:
+        return <IonRouterOutlet><AppRoutes /></IonRouterOutlet>;
+    }
+  };
+
+  return (
+    <IonApp>
+      <AuthInitializer />
+      <IonReactRouter>
+        {isAuthenticated ? (
+          renderRoleBasedLayouts()
+        ) : (
+          <IonRouterOutlet>
+            <AppRoutes />
+          </IonRouterOutlet>
+        )}
+      </IonReactRouter>
+    </IonApp>
+  );
+};
+
+// Root app component with Redux providers
 const App: React.FC = () => (
-  <IonApp>
-    <IonReactRouter>
-      <IonTabs>
-        <IonRouterOutlet>
-          <AppRoutes />
-        </IonRouterOutlet>
-        <IonTabBar slot="bottom">
-          <IonTabButton tab="tab1" href="/tab1">
-            <IonIcon aria-hidden="true" icon={triangle} />
-            <IonLabel>Properties</IonLabel>
-          </IonTabButton>
-          <IonTabButton tab="tab2" href="/tab2">
-            <IonIcon aria-hidden="true" icon={ellipse} />
-            <IonLabel>Ads</IonLabel>
-          </IonTabButton>
-          <IonTabButton tab="tab3" href="/tab3">
-            <IonIcon aria-hidden="true" icon={square} />
-            <IonLabel>Requests</IonLabel>
-          </IonTabButton>
-        </IonTabBar>
-      </IonTabs>
-    </IonReactRouter>
-  </IonApp>
+  <Provider store={store}>
+    <PersistGate loading={null} persistor={persistor}>
+      <AppContent />
+    </PersistGate>
+  </Provider>
 );
 
 export default App;

@@ -1,14 +1,11 @@
 import { IonContent, IonHeader, IonList, IonPage, IonTitle, IonToolbar } from "@ionic/react"
 import TenantPropertyRequestCard from "../../../components/tenant/PropertyRequest/TenantPropertyRequestCard"
+import PageHeader from "../../../components/common/PageHeader"
 
 const PropertyRequests = () => {
   return (
     <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle >Property Requests</IonTitle>
-        </IonToolbar>
-      </IonHeader>
+      <PageHeader title="Property Requests" />
       <IonContent fullscreen>
         <IonHeader collapse="condense">
           <IonToolbar>

@@ -7,15 +7,12 @@ import {
   IonToolbar
 } from '@ionic/react';
 import { TenantRequest } from '../../../components/property/TenantRequest';
+import PageHeader from '../../../components/common/PageHeader';
 
 const OwnerRequests: React.FC = () => {
   return (
     <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle >Requests</IonTitle>
-        </IonToolbar>
-      </IonHeader>
+      <PageHeader title="Requests" />
       <IonContent fullscreen>
         <IonHeader collapse="condense">
           <IonToolbar>

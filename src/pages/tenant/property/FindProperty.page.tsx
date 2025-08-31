@@ -1,15 +1,12 @@
 import { IonContent, IonFab, IonFabButton, IonHeader, IonLabel, IonList, IonPage, IonTitle, IonToolbar } from "@ionic/react"
 import PropertyCard from "../../../components/property/PropertyCard/PropertyCard"
+import PageHeader from "../../../components/common/PageHeader"
 
 const FindProperty = () => {
   
   return (
     <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle >Find Properties</IonTitle>
-        </IonToolbar>
-      </IonHeader>
+      <PageHeader title="Find Properties" />
       <IonContent fullscreen>
         <IonHeader collapse="condense">
           <IonToolbar>
