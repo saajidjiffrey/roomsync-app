@@ -9,15 +9,21 @@ PODS:
   - CapacitorFilesystem (7.1.1):
     - Capacitor
     - IONFilesystemLib (~> 1.0)
+  - CapacitorGeolocation (7.1.3):
+    - Capacitor
+    - IONGeolocationLib (~> 1.0)
   - CapacitorHaptics (7.0.1):
     - Capacitor
   - CapacitorKeyboard (7.0.1):
     - Capacitor
   - CapacitorPreferences (7.0.1):
     - Capacitor
+  - CapacitorPushNotifications (7.0.2):
+    - Capacitor
   - CapacitorStatusBar (7.0.1):
     - Capacitor
   - IONFilesystemLib (1.0.0)
+  - IONGeolocationLib (1.0.1)
 
 DEPENDENCIES:
   - "Capacitor (from `../../node_modules/@capacitor/ios`)"
@@ -25,14 +31,17 @@ DEPENDENCIES:
   - "CapacitorCamera (from `../../node_modules/@capacitor/camera`)"
   - "CapacitorCordova (from `../../node_modules/@capacitor/ios`)"
   - "CapacitorFilesystem (from `../../node_modules/@capacitor/filesystem`)"
+  - "CapacitorGeolocation (from `../../node_modules/@capacitor/geolocation`)"
   - "CapacitorHaptics (from `../../node_modules/@capacitor/haptics`)"
   - "CapacitorKeyboard (from `../../node_modules/@capacitor/keyboard`)"
   - "CapacitorPreferences (from `../../node_modules/@capacitor/preferences`)"
+  - "CapacitorPushNotifications (from `../../node_modules/@capacitor/push-notifications`)"
   - "CapacitorStatusBar (from `../../node_modules/@capacitor/status-bar`)"
 
 SPEC REPOS:
   trunk:
     - IONFilesystemLib
+    - IONGeolocationLib
 
 EXTERNAL SOURCES:
   Capacitor:
@@ -45,12 +54,16 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/@capacitor/ios"
   CapacitorFilesystem:
     :path: "../../node_modules/@capacitor/filesystem"
+  CapacitorGeolocation:
+    :path: "../../node_modules/@capacitor/geolocation"
   CapacitorHaptics:
     :path: "../../node_modules/@capacitor/haptics"
   CapacitorKeyboard:
     :path: "../../node_modules/@capacitor/keyboard"
   CapacitorPreferences:
     :path: "../../node_modules/@capacitor/preferences"
+  CapacitorPushNotifications:
+    :path: "../../node_modules/@capacitor/push-notifications"
   CapacitorStatusBar:
     :path: "../../node_modules/@capacitor/status-bar"
 
@@ -60,12 +73,15 @@ SPEC CHECKSUMS:
   CapacitorCamera: eb8687d8687fed853598ec9460d94bcd5e16babe
   CapacitorCordova: 5967b9ba03915ef1d585469d6e31f31dc49be96f
   CapacitorFilesystem: 3acaa1d2b909a9dd904581a86f21782886e6bb38
+  CapacitorGeolocation: 551a7a947ab0219a84cda01a0af91fb46bd3884b
   CapacitorHaptics: 70e47470fa1a6bd6338cd102552e3846b7f9a1b3
   CapacitorKeyboard: 969647d0ca2e5c737d7300088e2517aa832434e2
   CapacitorPreferences: cbf154e5e5519b7f5ab33817a334dda1e98387f9
+  CapacitorPushNotifications: 6ffcf5df95f17d71a1b02893549bc4727f80540c
   CapacitorStatusBar: 275cbf2f4dfc00388f519ef80c7ec22edda342c9
   IONFilesystemLib: ceacae793975039530458eabab0c495c70515a0d
+  IONGeolocationLib: 20f9d0248a0b5264511fb57a37e25dd2badf797a
 
-PODFILE CHECKSUM: bfc80ff7fd6c2ab1707d95794a58c07d81e03bec
+PODFILE CHECKSUM: dd954887b8856fb387c9b58b6a0f856b8513e229
 
 COCOAPODS: 1.16.2

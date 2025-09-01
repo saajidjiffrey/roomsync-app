@@ -31,3 +31,4 @@ yarn-error.log*
 .eslintcache
 
 NOTES.md
+*.md
