@@ -1,6 +1,5 @@
 import {
   IonApp,
-  IonRouterOutlet,
   setupIonicReact
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
@@ -10,10 +9,6 @@ import { store, persistor } from './store';
 import { useEffect } from 'react';
 import { useAppDispatch } from './store/hooks';
 import { initializeAuth } from './store/slices/authSlice';
-import { useAuth } from './hooks/useAuth';
-import OwnerLayout from './components/layouts/OwnerLayout';
-import TenantLayout from './components/layouts/TenantLayout';
-import AdminLayout from './components/layouts/AdminLayout';
 import ErrorBoundary from './components/common/ErrorBoundary';
 
 /* Core CSS required for Ionic components to work properly */
@@ -62,32 +57,11 @@ const AuthInitializer: React.FC = () => {
 
 // Main app component
 const AppContent: React.FC = () => {
-  const { isAuthenticated, userRole } = useAuth();
-
-  const renderRoleBasedLayouts = () => {
-    switch (userRole) {
-      case 'owner':
-        return <OwnerLayout />;
-      case 'tenant':
-        return <TenantLayout />;
-      case 'admin':
-        return <AdminLayout />;
-      default:
-        return <IonRouterOutlet><AppRoutes /></IonRouterOutlet>;
-    }
-  };
-
   return (
     <IonApp>
       <AuthInitializer />
       <IonReactRouter>
-        {isAuthenticated ? (
-          renderRoleBasedLayouts()
-        ) : (
-          <IonRouterOutlet>
-            <AppRoutes />
-          </IonRouterOutlet>
-        )}
+        <AppRoutes />
       </IonReactRouter>
     </IonApp>
   );
