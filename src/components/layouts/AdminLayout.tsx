@@ -13,7 +13,7 @@ const AdminLayout: React.FC = () => {
   return (
     <>
       <AppMenu menuId="admin-menu" />
-      <IonTabs id="admin-menu">
+      <IonTabs>
         <IonRouterOutlet>
           <Route exact path="/admin/dashboard" component={AdminDashboard} />
           <Route exact path="/admin/users" component={UserManagement} />

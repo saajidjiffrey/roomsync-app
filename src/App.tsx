@@ -14,6 +14,7 @@ import { useAuth } from './hooks/useAuth';
 import OwnerLayout from './components/layouts/OwnerLayout';
 import TenantLayout from './components/layouts/TenantLayout';
 import AdminLayout from './components/layouts/AdminLayout';
+import ErrorBoundary from './components/common/ErrorBoundary';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -94,11 +95,13 @@ const AppContent: React.FC = () => {
 
 // Root app component with Redux providers
 const App: React.FC = () => (
-  <Provider store={store}>
-    <PersistGate loading={null} persistor={persistor}>
-      <AppContent />
-    </PersistGate>
-  </Provider>
+  <ErrorBoundary>
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <AppContent />
+      </PersistGate>
+    </Provider>
+  </ErrorBoundary>
 );
 
 export default App;

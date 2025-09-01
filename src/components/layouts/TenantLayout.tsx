@@ -19,7 +19,7 @@ const TenantLayout: React.FC = () => {
   return (
     <>
       <AppMenu menuId="tenant-menu" />
-      <IonTabs id="tenant-menu">
+      <IonTabs>
         <IonRouterOutlet>
           {/* Tab routes */}
           <Route exact path="/tenant/find-property" component={FindPropertyPage} />

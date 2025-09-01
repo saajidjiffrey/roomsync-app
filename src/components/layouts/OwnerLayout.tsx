@@ -17,7 +17,7 @@ const OwnerLayout: React.FC = () => {
   return (
     <>
       <AppMenu menuId="owner-menu" />
-      <IonTabs id="owner-menu">
+      <IonTabs>
         <IonRouterOutlet>
           {/* Tab routes */}
           <Route exact path="/owner/my-properties" component={OwnerPropertyListPage} />

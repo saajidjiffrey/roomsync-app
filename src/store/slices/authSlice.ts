@@ -9,6 +9,7 @@ interface ApiError {
       message?: string;
       errors?: string[];
     };
+    status?: number;
   };
   message?: string;
 }
@@ -47,7 +48,20 @@ export const login = createAsyncThunk(
       }
     } catch (error: unknown) {
       const apiError = error as ApiError;
-      return rejectWithValue(apiError.response?.data?.message || apiError.message || 'Login failed');
+      let errorMessage = 'Login failed';
+      
+      // Provide more specific error messages
+      if (apiError.response?.status === 401) {
+        errorMessage = 'Invalid email or password';
+      } else if (apiError.response?.status === 422) {
+        errorMessage = apiError.response.data?.message || 'Invalid input data';
+      } else if (apiError.response?.status === 500) {
+        errorMessage = 'Server error. Please try again later.';
+      } else if (apiError.message) {
+        errorMessage = apiError.message;
+      }
+      
+      return rejectWithValue(errorMessage);
     }
   }
 );

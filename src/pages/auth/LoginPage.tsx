@@ -71,8 +71,10 @@ const LoginPage: React.FC = () => {
       await login({ email, password });
       // Success toast will be shown in the Redux slice
       // Redirect will be handled by useEffect above
-    } catch {
+    } catch (error) {
       // Error is handled by the Redux slice and shown via useEffect above
+      // Don't throw the error to prevent page refresh
+      console.error('Login error:', error);
     }
   };
 

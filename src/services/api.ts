@@ -33,10 +33,11 @@ api.interceptors.response.use(
   },
   (error: AxiosError) => {
     if (error.response?.status === 401) {
-      // Token expired or invalid
+      // Token expired or invalid - clear storage but don't force page refresh
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      window.location.href = '/login';
+      // Instead of forcing navigation, let the app handle it gracefully
+      // The auth state will update and redirect will happen through React Router
     }
     return Promise.reject(error);
   }

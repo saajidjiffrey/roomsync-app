@@ -62,8 +62,8 @@ const TestPage: React.FC = () => {
     try {
       const response = await authAPI.getProfile();
       await toastService.success(`API call successful! User: ${response.data?.full_name}`);
-    } catch (error) {
-      await toastService.showApiError(error);
+    } catch (error: unknown) {
+      await toastService.showApiError(error as any);
     }
   };
 
