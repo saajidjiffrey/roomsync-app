@@ -15,6 +15,7 @@ import { add } from 'ionicons/icons';
 import { OverlayEventDetail } from '@ionic/react/dist/types/components/react-component-lib/interfaces';
 import CreatePropertyModal from '../../../modals/CreateProperty.modal';
 import PageHeader from '../../../components/common/PageHeader';
+import AppMenu from '../../../components/common/AppMenu';
 
 const OwnerPropertyPage: React.FC = () => {
   const [present, dismiss] = useIonModal(CreatePropertyModal, {
@@ -31,34 +32,37 @@ const OwnerPropertyPage: React.FC = () => {
     });
   }
   return (
-    <IonPage>
-      <PageHeader title="My Properties" />
-      <IonContent fullscreen>
-        <IonHeader collapse="condense">
-          <IonToolbar>
-            <IonTitle size="large">My Properties</IonTitle>
-          </IonToolbar>
-        </IonHeader>
-        <IonList lines='inset' inset={true}>
-          <PropertyCard />
-          <PropertyCard />
-          <PropertyCard />
-          <PropertyCard />
-          <PropertyCard />
-          <PropertyCard />
-          <PropertyCard />
-          <PropertyCard />
-          <PropertyCard />
-          <PropertyCard />
-          <PropertyCard />
-        </IonList>
-        <IonFab slot="fixed" vertical="bottom" horizontal="end">
-          <IonFabButton onClick={() => openModal()}>
-            <IonIcon icon={add}></IonIcon>
-          </IonFabButton>
-        </IonFab>
-      </IonContent>
-    </IonPage>
+    <>
+      <AppMenu menuId="main-content" />
+      <IonPage id="main-content">
+        <PageHeader title="My Properties" />
+        <IonContent fullscreen>
+          <IonHeader collapse="condense">
+            <IonToolbar>
+              <IonTitle size="large">My Properties</IonTitle>
+            </IonToolbar>
+          </IonHeader>
+          <IonList lines='inset' inset={true}>
+            <PropertyCard />
+            <PropertyCard />
+            <PropertyCard />
+            <PropertyCard />
+            <PropertyCard />
+            <PropertyCard />
+            <PropertyCard />
+            <PropertyCard />
+            <PropertyCard />
+            <PropertyCard />
+            <PropertyCard />
+          </IonList>
+          <IonFab slot="fixed" vertical="bottom" horizontal="end">
+            <IonFabButton onClick={() => openModal()}>
+              <IonIcon icon={add}></IonIcon>
+            </IonFabButton>
+          </IonFab>
+        </IonContent>
+      </IonPage>
+    </>
   );
 };
 

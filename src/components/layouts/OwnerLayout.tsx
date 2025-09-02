@@ -11,12 +11,10 @@ import { home, newspaper, people } from 'ionicons/icons';
 import { Route, Redirect } from 'react-router-dom';
 import { OwnerPropertyListPage, OwnerAdsListPage, OwnerRequestListPage } from '../../pages/owner';
 import PropertyDetailPage from '../../pages/property/PropertyDetail.page';
-import AppMenu from '../common/AppMenu';
 
 const OwnerLayout: React.FC = () => {
   return (
     <>
-      <AppMenu menuId="owner-menu" />
       <IonTabs>
         <IonRouterOutlet>
           {/* Tab routes */}

@@ -13,12 +13,10 @@ import {
   ExpenseDetailPage 
 } from '../../pages/tenant';
 import TestRoute from '../../pages/tenant/TestRoute';
-import AppMenu from '../common/AppMenu';
 
 const TenantLayout: React.FC = () => {
   return (
     <>
-      <AppMenu menuId="tenant-menu" />
       <IonTabs>
         <IonRouterOutlet>
           {/* Tab routes */}

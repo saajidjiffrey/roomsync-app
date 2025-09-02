@@ -1,5 +1,5 @@
-import React from 'react';
-import { Redirect, Route, Switch } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { IonRouterOutlet } from '@ionic/react';
 
@@ -23,7 +23,16 @@ import AdminLayout from '../components/layouts/AdminLayout';
 import ProtectedRoute from '../components/common/ProtectedRoute';
 
 const AppRoutes: React.FC = () => {
-  const { isAuthenticated, isLoading, userRole } = useAuth();
+  const { isAuthenticated, isLoading, userRole, clearError } = useAuth();
+  const location = useLocation();
+
+  // Clear auth errors when navigating to public routes
+  useEffect(() => {
+    const publicRoutes = ['/landing', '/login', '/signup'];
+    if (publicRoutes.includes(location.pathname)) {
+      clearError();
+    }
+  }, [location.pathname, clearError]);
 
   // Show loading while checking authentication
   if (isLoading) {
@@ -53,6 +62,7 @@ const AppRoutes: React.FC = () => {
         <Route exact path="/login" component={LoginPage} />
         <Route exact path="/signup" component={SignupPage} />
         <Route exact path="/unauthorized" component={UnauthorizedPage} />
+        {/* <Route exact path="/test" component={TestPage} /> */}
         
         {/* Test route - accessible to all authenticated users */}
         <ProtectedRoute exact path="/test">

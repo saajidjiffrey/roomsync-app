@@ -2,7 +2,6 @@ import React from 'react';
 import { IonIcon, IonLabel, IonTabBar, IonTabButton, IonTabs, IonRouterOutlet } from '@ionic/react';
 import { home, people, settings } from 'ionicons/icons';
 import { Route, Redirect } from 'react-router-dom';
-import AppMenu from '../common/AppMenu';
 
 // Placeholder components - you can replace these with actual admin pages
 const AdminDashboard = () => <div>Admin Dashboard</div>;
@@ -12,7 +11,6 @@ const SystemSettings = () => <div>System Settings</div>;
 const AdminLayout: React.FC = () => {
   return (
     <>
-      <AppMenu menuId="admin-menu" />
       <IonTabs>
         <IonRouterOutlet>
           <Route exact path="/admin/dashboard" component={AdminDashboard} />
