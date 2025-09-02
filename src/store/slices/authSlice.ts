@@ -81,7 +81,20 @@ export const register = createAsyncThunk(
       }
     } catch (error: unknown) {
       const apiError = error as ApiError;
-      return rejectWithValue(apiError.response?.data?.message || apiError.message || 'Registration failed');
+      let errorMessage = 'Registration failed';
+      
+      // Provide more specific error messages
+      if (apiError.response?.status === 409) {
+        errorMessage = 'Email already exists. Please use a different email.';
+      } else if (apiError.response?.status === 422) {
+        errorMessage = apiError.response.data?.message || 'Invalid input data';
+      } else if (apiError.response?.status === 500) {
+        errorMessage = 'Server error. Please try again later.';
+      } else if (apiError.message) {
+        errorMessage = apiError.message;
+      }
+      
+      return rejectWithValue(errorMessage);
     }
   }
 );
