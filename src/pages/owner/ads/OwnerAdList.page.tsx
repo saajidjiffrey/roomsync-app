@@ -1,28 +1,47 @@
 import {
-  IonButton,
-  IonButtons,
   IonContent,
   IonFab,
   IonFabButton,
   IonHeader,
   IonIcon,
-  IonInput,
   IonList,
-  IonModal,
   IonPage,
-  IonSelect,
-  IonSelectOption,
   IonTitle,
-  IonToolbar
+  IonToolbar,
+  useIonModal
 } from '@ionic/react';
 import { add } from 'ionicons/icons';
-import { PropertyAd } from '../../../components/property/PropertyAd';
-import { useRef } from 'react';
+import { useEffect } from 'react';
 import PageHeader from '../../../components/common/PageHeader';
 import AppMenu from '../../../components/common/AppMenu';
+import { useAppDispatch, useAppSelector } from '../../../store/hooks';
+import { fetchMyPropertyAds } from '../../../store/slices/propertyAdSlice';
+import { showLoadingSpinner, stopLoadingSpinner } from '../../../utils/spinnerUtils';
+import { IonText } from '@ionic/react';
+import { CreatePropertyAdModal } from '../../../modals';
+import { OverlayEventDetail } from '@ionic/react/dist/types/components/react-component-lib/interfaces';
+import PropertyAd from '../../../components/property/PropertyAd/PropertyAd';
+
 
 const OwnerAdsPage: React.FC = () => {
-  const modal = useRef<HTMLIonModalElement>(null);
+  const dispatch = useAppDispatch();
+  const { propertyAds, isLoading } = useAppSelector((state) => state.propertyAd);
+
+  const [present, dismiss] = useIonModal(CreatePropertyAdModal, {
+    dismiss: (data: string, role: string) => dismiss(data, role),
+  });
+
+  useEffect(() => {
+    const loadAds = async () => {
+      showLoadingSpinner('Loading ads...');
+      try {
+        await dispatch(fetchMyPropertyAds());
+      } finally {
+        stopLoadingSpinner();
+      }
+    };
+    loadAds();
+  }, [dispatch]);
   return (
     <>
       <AppMenu menuId="main-content" />
@@ -34,52 +53,32 @@ const OwnerAdsPage: React.FC = () => {
               <IonTitle size="large">My Ads</IonTitle>
             </IonToolbar>
           </IonHeader>
-          <IonList lines='inset' inset={true}>
-            <PropertyAd />
-            <PropertyAd />
-            <PropertyAd />
-            <PropertyAd />
-            <PropertyAd />
-            <PropertyAd />
-            <PropertyAd />
-            <PropertyAd />
-            <PropertyAd />
-          </IonList>
+          {(!propertyAds || propertyAds.length === 0) && !isLoading ? (
+            <div className='ion-text-center ion-padding ion-margin-top'>
+              <IonText>
+                <p>No ads found. Create your first ad!</p>
+              </IonText>
+            </div>
+          ) : (
+            <IonList lines='inset' inset={true}>
+              {propertyAds.map((ad) => (
+                <PropertyAd key={ad.id} ad={ad} />
+              ))}
+            </IonList>
+          )}
           <IonFab slot="fixed" vertical="bottom" horizontal="end">
-            <IonFabButton id="open-modal">
+            <IonFabButton onClick={() => {
+              present({
+                onWillDismiss: (event: CustomEvent<OverlayEventDetail>) => {
+                  if (event.detail.role === 'confirm') {
+                    dispatch(fetchMyPropertyAds());
+                  }
+                },
+              });
+            }}>
               <IonIcon icon={add}></IonIcon>
             </IonFabButton>
           </IonFab>
-          <IonModal ref={modal} trigger="open-modal" canDismiss={true}>
-            <IonHeader>
-              <IonToolbar>
-                <IonTitle>Create Ad</IonTitle>
-                <IonButtons slot="end">
-                  <IonButton onClick={() => modal.current?.dismiss()}>Close</IonButton>
-                </IonButtons>
-              </IonToolbar>
-            </IonHeader>
-            <IonContent className="ion-padding">
-            
-              <IonSelect label="Select Property" interface="action-sheet" labelPlacement="floating" placeholder="Select Property">
-                <IonSelectOption value="1">Property 1</IonSelectOption>
-                <IonSelectOption value="2">Property 2</IonSelectOption>
-                <IonSelectOption value="3">Property 3</IonSelectOption>
-              </IonSelect>
-              <IonInput type="number" label="Number of Tenants" labelPlacement="floating" placeholder="Number of Tenants" />
-              <div style={{
-                position: 'fixed',
-                left: 0,
-                right: 0,
-                bottom: 0,
-                background: 'white',
-                padding: '16px',
-              }}>
-                <IonButton className='ion-margin-top' expand="block" color="primary" onClick={() => modal.current?.dismiss()}>Create Ad</IonButton>
-                <IonButton className='ion-margin-top' expand="block" color="secondary" onClick={() => modal.current?.dismiss()}>Close</IonButton>
-              </div>
-            </IonContent>
-          </IonModal>
         </IonContent>
       </IonPage>
     </>

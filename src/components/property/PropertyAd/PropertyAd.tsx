@@ -1,9 +1,13 @@
 import { IonAvatar, IonChip, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonLabel, IonNote } from '@ionic/react';
 import React from 'react';
 import './PropertyAd.css';
+import { PropertyAd as PropertyAdType } from '../../../types/propertyAd';
 
-const PropertyAd: React.FC = () => {
+type Props = {
+  ad: PropertyAdType;
+};
 
+const PropertyAd: React.FC<Props> = ({ ad }) => {
   return (
     <IonItemSliding>
       <IonItemOptions side="start">
@@ -14,20 +18,23 @@ const PropertyAd: React.FC = () => {
           <img alt="" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
         </IonAvatar>
         <IonLabel className='ion-align-self-start'>
-          <strong>Property Name</strong>
-          <IonNote color="medium" className="ion-text-wrap">
-            123, King's street, Kandy
-          </IonNote>
+          <strong>{ad.property?.name ?? `Property #${ad.property_id}`}</strong>
+          {ad.property?.address && (
+            <IonNote color="medium" className="ion-text-wrap">
+              {ad.property.address}
+            </IonNote>
+          )}
           <br />
-          
-          <IonChip color="secondary">Looking for 1 tenant(s)</IonChip>
+          <IonChip color={ad.is_active ? 'secondary' : 'medium'}>
+            Looking for {ad.number_of_spaces_looking_for} tenant(s)
+          </IonChip>
         </IonLabel>
       </IonItem>
       <IonItemOptions side="end">
         <IonItemOption>Favorite</IonItemOption>
         <IonItemOption color="danger">Delete</IonItemOption>
       </IonItemOptions>
-      </IonItemSliding>
+    </IonItemSliding>
   );
 };
 

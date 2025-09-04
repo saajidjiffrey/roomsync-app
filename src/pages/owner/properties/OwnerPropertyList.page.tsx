@@ -55,9 +55,6 @@ const OwnerPropertyPage: React.FC = () => {
   }
 
   const renderContent = () => {
-    // Global spinner handles all loading states
-    console.log('isLoading', isLoading);
-    console.log('properties', properties);
     if (!properties || properties.length === 0 && !isLoading) {
       return (
         <div className='ion-text-center ion-padding ion-margin-top'>
