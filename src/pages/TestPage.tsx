@@ -18,7 +18,7 @@ import {
 } from '@ionic/react';
 import { useAuth } from '../hooks/useAuth';
 import toastService from '../services/toast';
-import { authAPI } from '../services/api';
+import { authAPI } from '../api/authApi';
 
 const TestPage: React.FC = () => {
   const { user, isAuthenticated, login, logout, isLoading } = useAuth();

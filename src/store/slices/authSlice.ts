@@ -1,27 +1,9 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { authAPI, User, LoginRequest, RegisterRequest, PasswordUpdateRequest } from '../../services/api';
+import { authAPI } from '../../api/authApi';
+import { ApiError } from '../../types/api';
+import { User, LoginRequest, RegisterRequest, PasswordUpdateRequest, AuthState } from '../../types/user';
 import toastService from '../../services/toast';
 
-// Error interface
-interface ApiError {
-  response?: {
-    data?: {
-      message?: string;
-      errors?: string[];
-    };
-    status?: number;
-  };
-  message?: string;
-}
-
-// Auth state interface
-interface AuthState {
-  user: User | null;
-  token: string | null;
-  isAuthenticated: boolean;
-  isLoading: boolean;
-  error: string | null;
-}
 
 // Initial state
 const initialState: AuthState = {

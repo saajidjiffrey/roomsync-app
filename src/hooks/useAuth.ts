@@ -14,7 +14,7 @@ import {
   updatePassword,
   clearError,
 } from '../store/slices/authSlice';
-import { LoginRequest, RegisterRequest, PasswordUpdateRequest } from '../services/api';
+import { LoginRequest, RegisterRequest, PasswordUpdateRequest } from '../types/user';
 
 export const useAuth = () => {
   const dispatch = useAppDispatch();
