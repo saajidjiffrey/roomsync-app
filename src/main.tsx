@@ -1,4 +1,5 @@
 import React from 'react';
+import { defineCustomElements } from '@ionic/pwa-elements/loader';
 import { createRoot } from 'react-dom/client';
 import App from './App';
 import { Provider } from 'react-redux'
@@ -21,6 +22,7 @@ window.addEventListener('unhandledrejection', (event) => {
 
 const container = document.getElementById('root');
 const root = createRoot(container!);
+defineCustomElements(window);
 
 root.render(
   

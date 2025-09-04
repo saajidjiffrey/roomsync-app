@@ -72,7 +72,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
   if (overlay) {
     return (
       <div className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" 
-           style={{ backgroundColor: 'rgba(0, 0, 0, 0.7)', zIndex: 9999 }}>
+           style={{ backgroundColor: 'rgba(0, 0, 0, 0.7)', zIndex: 9500 }}>
         {spinnerContent}
       </div>
     );

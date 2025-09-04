@@ -24,6 +24,7 @@
     "@capacitor/preferences": "^7.0.1",
     "@capacitor/push-notifications": "^7.0.2",
     "@capacitor/status-bar": "7.0.1",
+    "@capacitor/toast": "^7.0.2",
     "@ionic/pwa-elements": "^3.3.0",
     "@ionic/react": "^8.5.0",
     "@ionic/react-router": "^8.5.0",

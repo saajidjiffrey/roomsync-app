@@ -51,3 +51,7 @@ ion-chip{
 .receipt-image{
   height: 6rem !important;
 } 
+
+ion-toast {
+  z-index: 99999 !important;
+}
