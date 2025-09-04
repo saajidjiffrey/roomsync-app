@@ -121,9 +121,9 @@ const CreatePropertyAdModal = ({ dismiss }: { dismiss: (data?: string | null | u
       </IonHeader>
       <IonContent className="ion-padding">
         <IonList mode='ios' lines='inset' className='input-wrapper ion-padding-vertical'>
-          <IonListHeader className='ion-margin-bottom'>
+          {/* <IonListHeader className='ion-margin-bottom'>
             <IonLabel>Ad Details</IonLabel>
-          </IonListHeader>
+          </IonListHeader> */}
 
           <IonItem>
             <IonSelect 
