@@ -2,29 +2,32 @@ import { IonAvatar, IonButton, IonIcon, IonItem, IonItemOption, IonItemOptions, 
 import React from 'react';
 import './TenantRequest.css';
 import { checkmark, close } from 'ionicons/icons';
+import { PropertyJoinRequest } from '../../../types/propertyJoinRequest';
+import { useAppDispatch } from '../../../store/hooks';
+import { respondToJoinRequest } from '../../../store/slices/propertyJoinRequestSlice';
 
-const TenantRequest: React.FC = () => {
+type Props = { request: PropertyJoinRequest };
+
+const TenantRequest: React.FC<Props> = ({ request }) => {
+  const dispatch = useAppDispatch();
 
   return (
     <IonItemSliding>
-      <IonItemOptions side="start">
-        <IonItemOption color="success">Archive</IonItemOption>
-      </IonItemOptions>
       <IonItem>
         <IonAvatar aria-hidden="true" slot="start" className='user-avatar ion-align-self-start'>
           <img alt="" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
         </IonAvatar>
         <IonLabel className='ion-align-self-start'>
-          <strong>Tenant Name</strong>
+          <strong>{request.tenant?.name ?? `Tenant #${request.tenant_id}`}</strong>
           <IonNote color="medium" className="ion-text-wrap">
-            Wants to be a tenant of the property <span>Property Name ABC</span>
+            Wants to be a tenant of the property <span>{request.propertyAd?.property?.name ?? `Ad #${request.property_ad_id}`}</span>
           </IonNote>
         </IonLabel>
         <div className='button-container ion-margin-top'>
-          <IonButton shape="round" color='danger' size='small'>
+          <IonButton shape="round" color='danger' size='small' onClick={() => dispatch(respondToJoinRequest({ requestId: request.id, status: 'rejected' }))}>
             <IonIcon slot="icon-only" icon={close}></IonIcon>
           </IonButton>
-          <IonButton shape="round" color='success' size='small'>
+          <IonButton shape="round" color='success' size='small' onClick={() => dispatch(respondToJoinRequest({ requestId: request.id, status: 'approved' }))}>
             <IonIcon slot="icon-only" icon={checkmark}></IonIcon>
           </IonButton>
         </div>
