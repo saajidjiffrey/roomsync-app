@@ -24,6 +24,21 @@ const extractErrorMessage = (error: unknown, fallbackMessage: string): string =>
 };
 
 // Async thunks
+export const fetchAllPropertyAds = createAsyncThunk(
+  'propertyAd/fetchAllPropertyAds',
+  async (filters: { is_active?: boolean } | undefined, { rejectWithValue }) => {
+    try {
+      const response = await propertyAdApi.getAllPropertyAds(filters);
+      if (response.success && response.data) {
+        return response.data;
+      } else {
+        return rejectWithValue(response.message || 'Failed to fetch property ads');
+      }
+    } catch (error: unknown) {
+      return rejectWithValue(extractErrorMessage(error, 'Failed to fetch property ads'));
+    }
+  }
+);
 export const fetchMyPropertyAds = createAsyncThunk(
   'propertyAd/fetchMyPropertyAds',
   async (_, { rejectWithValue }) => {
@@ -57,6 +72,22 @@ export const createPropertyAd = createAsyncThunk(
   }
 );
 
+export const fetchPropertyAdById = createAsyncThunk(
+  'propertyAd/fetchPropertyAdById',
+  async (id: number, { rejectWithValue }) => {
+    try {
+      const response = await propertyAdApi.getPropertyAdById(id);
+      if (response.success && response.data) {
+        return response.data;
+      } else {
+        return rejectWithValue(response.message || 'Failed to fetch property ad');
+      }
+    } catch (error: unknown) {
+      return rejectWithValue(extractErrorMessage(error, 'Failed to fetch property ad'));
+    }
+  }
+);
+
 // Initial state
 const initialState: PropertyAdState = {
   propertyAds: [],
@@ -80,6 +111,36 @@ const propertyAdSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // Fetch property ad by id
+      .addCase(fetchPropertyAdById.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchPropertyAdById.fulfilled, (state, action: PayloadAction<PropertyAd>) => {
+        state.isLoading = false;
+        state.currentPropertyAd = action.payload;
+        state.error = null;
+      })
+      .addCase(fetchPropertyAdById.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+        toastService.error(action.payload as string);
+      })
+      // Fetch all property ads (public)
+      .addCase(fetchAllPropertyAds.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchAllPropertyAds.fulfilled, (state, action: PayloadAction<PropertyAd[]>) => {
+        state.isLoading = false;
+        state.propertyAds = action.payload;
+        state.error = null;
+      })
+      .addCase(fetchAllPropertyAds.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+        toastService.error(action.payload as string);
+      })
       // Fetch my property ads (owner)
       .addCase(fetchMyPropertyAds.pending, (state) => {
         state.isLoading = true;

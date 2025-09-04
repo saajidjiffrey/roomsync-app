@@ -5,7 +5,7 @@ const RoommateCard: React.FC<{ showCheckbox: boolean }> = ({ showCheckbox = fals
   return (
     <IonItem button={true} detail={!showCheckbox}>
       <IonAvatar aria-hidden="true" slot="start" className='user-avatar ion-align-self-start avatar-square'>
-        <img alt="" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
+        <img alt="" src={"/images/user_placeholder.jpg"} />
       </IonAvatar>
       <IonLabel className='ion-align-self-start'>
         <strong>Roommate #1</strong>

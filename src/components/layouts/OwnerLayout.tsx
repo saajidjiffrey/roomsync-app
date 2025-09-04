@@ -23,7 +23,7 @@ const OwnerLayout: React.FC = () => {
           <Route exact path="/owner/join-requests" component={OwnerRequestListPage} />
           
           {/* Additional owner routes */}
-          <Route path="/owner/property-details" component={PropertyDetailPage} />
+          <Route path="/owner/property-details/:id" component={PropertyDetailPage} />
           
           {/* Default redirect */}
           <Route exact path="/owner">

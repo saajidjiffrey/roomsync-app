@@ -16,7 +16,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
       </IonItemOptions>
       <IonItem button={true} detail={true} routerLink={`/owner/property-details/${property.id}`} routerDirection='forward'>
         <IonAvatar aria-hidden="true" slot="start" className='property-avatar ion-align-self-start avatar-square'>
-          <img alt="" src={property.property_image || "https://ionicframework.com/docs/img/demos/avatar.svg"} />
+          <img alt="" src={property.property_image || "/images/property_placeholder.jpg"} />
         </IonAvatar>
         <IonLabel className='ion-align-self-start'>
           <strong>{property.name}</strong>
@@ -30,9 +30,16 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
             </p>
           </IonText>
           <div>
-            {property.tags && property.tags.map((tag, index) => (
-              <IonChip key={index} color="dark">{tag}</IonChip>
-            ))}
+            {Array.isArray(property.tags) && property.tags.length > 0 && (
+              <>
+                {property.tags.slice(0, 2).map((tag, index) => (
+                  <IonChip key={index} color="dark">{tag}</IonChip>
+                ))}
+                {property.tags.length > 2 && (
+                  <IonChip color="dark">{property.tags.length - 2} more..</IonChip>
+                )}
+              </>
+            )}
           </div>
         </IonLabel>
       </IonItem>

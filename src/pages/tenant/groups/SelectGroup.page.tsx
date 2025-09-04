@@ -46,7 +46,7 @@ const SelectGroup = () => {
         <IonList >
           <IonItem button detail={false}>
             <IonAvatar aria-hidden="true" slot="start" className='group-avatar ion-align-self-start avatar-square'>
-              <img alt="" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
+              <img alt="" src={"/images/user_placeholder.jpg"} />
             </IonAvatar>
             <IonLabel className='ion-align-self-start'>
               <strong>Group Name</strong>

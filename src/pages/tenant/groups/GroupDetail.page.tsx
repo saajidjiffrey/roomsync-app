@@ -9,10 +9,12 @@ import {
 } from '@ionic/react';
 import './GroupDetail.css';
 import RoommateCard from '../../../components/roommate/RoommateCard';
+import PageHeader from '../../../components/common/PageHeader';
 
 const GroupDetail: React.FC = () => {
   return (
     <IonPage>
+      <PageHeader title="Group Detail" showMenu={false} showBack={true} />
       <IonContent fullscreen>
         <IonImg
           src="https://docs-demo.ionic.io/assets/madison.jpg"

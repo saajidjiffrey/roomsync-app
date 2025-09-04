@@ -24,7 +24,7 @@ const TenantLayout: React.FC = () => {
           <Route exact path="/tenant/my-requests" component={PropertyRequestsPage} />
           
           {/* Additional tenant routes */}
-          <Route path="/tenant/property-details" component={TenantPropertyDetailPage} />
+          <Route path="/tenant/property-details/:id" component={TenantPropertyDetailPage} />
           <Route path="/tenant/select-group" component={SelectGroupPage} />
           <Route path="/tenant/group-detail" component={GroupDetailPage} />
           <Route path="/tenant/home" component={TenantHome} />

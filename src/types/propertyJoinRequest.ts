@@ -18,12 +18,18 @@ export interface PropertyJoinRequest {
       id: number;
       name: string;
       address: string;
+      space_available: number;
+      property_image?: string | null;
     }
   };
   tenant?: {
     id: number;
     user_id: number;
-    name?: string;
+    full_name?: string;
+    tenantUser?: {
+      id: number;
+      full_name: string;
+    };
   };
 }
 

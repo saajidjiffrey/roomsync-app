@@ -2,20 +2,23 @@ import { IonAvatar, IonChip, IonItem, IonItemOption, IonItemOptions, IonItemSlid
 import React from 'react';
 import './PropertyAd.css';
 import { PropertyAd as PropertyAdType } from '../../../types/propertyAd';
+import { useAppSelector } from '../../../store/hooks';
 
 type Props = {
   ad: PropertyAdType;
 };
 
 const PropertyAd: React.FC<Props> = ({ ad }) => {
+  const role = useAppSelector((state) => state.auth.user?.role);
+  const detailsPath = role === 'owner' ? `/owner/property-details/${ad.property_id}` : `/tenant/property-details/${ad.id}`;
   return (
     <IonItemSliding>
       <IonItemOptions side="start">
         <IonItemOption color="success">Archive</IonItemOption>
       </IonItemOptions>
-      <IonItem button={true} detail={true}>
+      <IonItem button={true} detail={true} routerLink={detailsPath} routerDirection='forward'>
         <IonAvatar aria-hidden="true" slot="start" className='property-avatar ion-align-self-start avatar-square'>
-          <img alt="" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
+          <img alt="" src={ad.property?.property_image ||"/images/ad_placeholder.jpg"} />
         </IonAvatar>
         <IonLabel className='ion-align-self-start'>
           <strong>{ad.property?.name ?? `Property #${ad.property_id}`}</strong>
@@ -25,8 +28,11 @@ const PropertyAd: React.FC<Props> = ({ ad }) => {
             </IonNote>
           )}
           <br />
-          <IonChip color={ad.is_active ? 'secondary' : 'medium'}>
-            Looking for {ad.number_of_spaces_looking_for} tenant(s)
+          <IonChip color={'primary'}>
+            {ad.number_of_spaces_looking_for} tenant(s)
+          </IonChip>
+          <IonChip color={ad.is_active ? 'success' : 'warning'}>
+          {ad.is_active ? 'Active' : 'Inactive'}
           </IonChip>
         </IonLabel>
       </IonItem>

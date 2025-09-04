@@ -170,7 +170,7 @@ const CreatePropertyModal = ({ dismiss }: { dismiss: (data?: string | null | und
       <IonContent className="ion-padding">
         <div style={{ position: 'relative' }}>
           <IonImg
-            src={'https://placehold.co/400'}
+            src={"/images/property_placeholder.jpg"}
             alt="Property Image"
             style={{ height: '200px', objectFit: 'cover' }}
           />

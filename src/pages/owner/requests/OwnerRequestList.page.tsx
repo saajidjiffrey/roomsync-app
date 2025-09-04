@@ -12,12 +12,12 @@ import PageHeader from '../../../components/common/PageHeader';
 import AppMenu from '../../../components/common/AppMenu';
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
-import { fetchOwnerReceivedJoinRequests } from '../../../store/slices/propertyJoinRequestSlice';
+import { fetchOwnerReceivedJoinRequests, selectOwnerActiveJoinRequests } from '../../../store/slices/propertyJoinRequestSlice';
 import { showLoadingSpinner, stopLoadingSpinner } from '../../../utils/spinnerUtils';
 
 const OwnerRequests: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { myRequests } = useAppSelector((state) => state.joinRequest);
+  const activeRequests = useAppSelector(selectOwnerActiveJoinRequests);
 
   useEffect(() => {
     const loadRequests = async () => {
@@ -42,7 +42,7 @@ const OwnerRequests: React.FC = () => {
               <IonTitle size="large">Requests</IonTitle>
             </IonToolbar>
           </IonHeader>
-          {(!myRequests || myRequests.length === 0) ? (
+          {(!activeRequests || activeRequests.length === 0) ? (
             <div className='ion-text-center ion-padding ion-margin-top'>
               <IonText>
                 <p>No requests found.</p>
@@ -50,7 +50,7 @@ const OwnerRequests: React.FC = () => {
             </div>
           ) : (
             <IonList lines='inset' inset={true}>
-              {myRequests.map((req) => (
+              {activeRequests.map((req) => (
                 <TenantRequest key={req.id} request={req} />
               ))}
             </IonList>

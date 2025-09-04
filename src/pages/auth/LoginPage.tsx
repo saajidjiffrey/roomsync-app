@@ -5,6 +5,7 @@ import { useHistory } from 'react-router';
 import toastService from '../../services/toast';
 import { showLoadingSpinner, stopLoadingSpinner } from '../../utils/spinnerUtils';
 import './LoginPage.css';
+import PageHeader from '../../components/common/PageHeader';
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -85,11 +86,7 @@ const LoginPage: React.FC = () => {
 
   return (
     <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Login</IonTitle>
-        </IonToolbar>
-      </IonHeader>
+      <PageHeader title="Login" showMenu={false} showBack={true} defaultHref='/landing'/>
       <IonContent fullscreen>
         <IonHeader collapse="condense">
           <IonToolbar>
@@ -101,7 +98,7 @@ const LoginPage: React.FC = () => {
           <IonList mode='ios' lines='inset' inset className='input-wrapper ion-padding-vertical'>
             <IonItem>
               <IonInput 
-                labelPlacement="floating" 
+                labelPlacement="stacked" 
                 mode='md' 
                 type='email' 
                 label="Email" 
@@ -119,7 +116,7 @@ const LoginPage: React.FC = () => {
             
             <IonItem>
               <IonInput 
-                labelPlacement="floating" 
+                labelPlacement="stacked" 
                 mode='md' 
                 type='password' 
                 label="Password" 
@@ -137,6 +134,12 @@ const LoginPage: React.FC = () => {
               </IonText>
             )}
           </IonList>
+          <div className='ion-text-center d-flex flex-row justify-content-center align-items-center'>
+            <IonText>
+              <small>Don't have an account? </small>
+            </IonText>
+            <IonButton fill="clear" size="small" routerLink="/signup">Sign up</IonButton>
+          </div>
         </form>
       </IonContent>
       <IonFooter className='ion-padding ion-no-border'>

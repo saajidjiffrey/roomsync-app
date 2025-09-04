@@ -1,6 +1,7 @@
 ion-img{
-  height: 60%;
+  height: 400px !important;
   object-fit: cover;
+  object-position: right;
 }
 
 .button-container{

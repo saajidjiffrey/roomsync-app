@@ -3,6 +3,7 @@ import { ApiError } from '../../types/api';
 import { PropertyJoinRequestState, PropertyJoinRequest, CreateJoinRequestPayload, RespondJoinRequestPayload } from '../../types/propertyJoinRequest';
 import { propertyJoinRequestApi } from '../../api/propertyJoinRequestApi';
 import toastService from '../../services/toast';
+import type { RootState } from '..';
 
 const extractErrorMessage = (error: unknown, fallbackMessage: string): string => {
   const apiError = error as ApiError;
@@ -163,4 +164,6 @@ const joinRequestSlice = createSlice({
 export const { clearError, clearJoinRequests } = joinRequestSlice.actions;
 export default joinRequestSlice.reducer;
 
-
+// Selectors
+export const selectOwnerActiveJoinRequests = (state: RootState) =>
+  state.joinRequest.myRequests.filter((r) => r.status === 'pending');

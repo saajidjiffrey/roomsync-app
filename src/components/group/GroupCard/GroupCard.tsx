@@ -8,7 +8,7 @@ const GroupCard: React.FC = () => {
     <IonItemSliding>
       <IonItem button={true} detail={true}>
         <IonAvatar aria-hidden="true" slot="start" className='group-avatar ion-align-self-start avatar-square'>
-          <img alt="" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
+          <img alt="" src={"/images/group_placeholder.jpg"} />
         </IonAvatar>
         <IonLabel className='ion-align-self-start'>
           <strong>Group Name</strong>

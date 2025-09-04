@@ -12,17 +12,19 @@ import {
 } from '@ionic/react';
 import './PropertyDetail.page.css';
 import { GroupCard } from '../../components/group/GroupCard';
+import PageHeader from '../../components/common/PageHeader';
 
 const OwnerPropertyDetailPage: React.FC = () => {
   return (
     <IonPage>
+      <PageHeader title="Property Detail" showMenu={false} showBack={true} />
       <IonContent fullscreen>
         <IonImg
-          src="https://docs-demo.ionic.io/assets/madison.jpg"
+          src={"/images/property_placeholder.jpg"}
           alt="The Wisconsin State Capitol building in Madison, WI at night"
         ></IonImg>
 
-        <div className='ion-align-self-start ion-padding-horizontal'>
+        <div className='ion-align-self-start ion-padding-horizontal ion-margin-top'>
           <IonText>
             <h1>Propety Name</h1>
           </IonText>

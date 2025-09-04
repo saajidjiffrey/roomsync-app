@@ -5,6 +5,7 @@ import { useHistory } from 'react-router';
 import toastService from '../../services/toast';
 import { showLoadingSpinner, stopLoadingSpinner } from '../../utils/spinnerUtils';
 import './SignupPage.css';
+import PageHeader from '../../components/common/PageHeader';
 
 interface FormErrors {
   full_name?: string;
@@ -155,11 +156,7 @@ const SignupPage: React.FC = () => {
 
   return (
     <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Signup</IonTitle>
-        </IonToolbar>
-      </IonHeader>
+      <PageHeader title="Signup" showMenu={false} showBack={true} defaultHref='/landing'/>
       <IonContent fullscreen>
         <IonHeader collapse="condense">
           <IonToolbar>
@@ -171,7 +168,7 @@ const SignupPage: React.FC = () => {
           <IonList mode='ios' lines='inset' inset className='input-wrapper ion-padding-vertical'>
             <IonItem>
               <IonInput 
-                labelPlacement="floating" 
+                labelPlacement="stacked" 
                 mode='md' 
                 type='text' 
                 label="Full Name" 
@@ -189,7 +186,7 @@ const SignupPage: React.FC = () => {
             
             <IonItem>
               <IonInput 
-                labelPlacement="floating" 
+                labelPlacement="stacked" 
                 mode='md' 
                 type='tel' 
                 label="Phone Number" 
@@ -207,7 +204,7 @@ const SignupPage: React.FC = () => {
             
             <IonItem>
               <IonInput 
-                labelPlacement="floating" 
+                labelPlacement="stacked" 
                 mode='md' 
                 type='text' 
                 label="Occupation" 
@@ -221,7 +218,7 @@ const SignupPage: React.FC = () => {
               <IonSelect 
                 interface="action-sheet" 
                 label="Select Role" 
-                labelPlacement="floating" 
+                labelPlacement="stacked" 
                 placeholder="Select Role"
                 value={formData.role}
                 onIonChange={(e) => handleInputChange('role', e.detail.value)}
@@ -239,7 +236,7 @@ const SignupPage: React.FC = () => {
             
             <IonItem>
               <IonInput 
-                labelPlacement="floating" 
+                labelPlacement="stacked" 
                 mode='md' 
                 type='email' 
                 label="Email" 
@@ -257,7 +254,7 @@ const SignupPage: React.FC = () => {
             
             <IonItem>
               <IonInput 
-                labelPlacement="floating" 
+                labelPlacement="stacked" 
                 mode='md' 
                 type='password' 
                 label="Password" 
@@ -277,7 +274,7 @@ const SignupPage: React.FC = () => {
             
             <IonItem>
               <IonInput 
-                labelPlacement="floating" 
+                labelPlacement="stacked" 
                 mode='md' 
                 type='password' 
                 label="Confirm Password" 
@@ -295,6 +292,12 @@ const SignupPage: React.FC = () => {
               </IonText>
             )}
           </IonList>
+            <div className='ion-text-center d-flex flex-row justify-content-center align-items-center'>
+              <IonText>
+              <small>Already have an account? </small>
+            </IonText>
+            <IonButton fill="clear" size="small" routerLink="/login">Log in</IonButton>
+          </div>
         </form>
       </IonContent>
       <IonFooter className='ion-padding ion-no-border'>

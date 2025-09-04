@@ -1,73 +1,27 @@
-import { IonContent, IonFab, IonFabButton, IonHeader, IonLabel, IonList, IonPage, IonTitle, IonToolbar } from "@ionic/react"
-import { PropertyCard } from "../../../components/property/PropertyCard"
+import { IonContent, IonFab, IonFabButton, IonHeader, IonLabel, IonList, IonPage, IonTitle, IonToolbar, IonText } from "@ionic/react"
+import PropertyAd from "../../../components/property/PropertyAd/PropertyAd"
 import PageHeader from "../../../components/common/PageHeader"
 import AppMenu from "../../../components/common/AppMenu"
-import { Property } from "../../../types/property"
+import { useEffect } from "react"
+import { showLoadingSpinner, stopLoadingSpinner } from "../../../utils/spinnerUtils"
+import { useAppDispatch, useAppSelector } from "../../../store/hooks"
+import { fetchAllPropertyAds } from "../../../store/slices/propertyAdSlice"
 
 const FindProperty = () => {
-  // Mock data for demonstration - in a real app, this would come from an API
-  const mockProperties: Property[] = [
-    {
-      id: 1,
-      name: "Sunset Apartments",
-      address: "123 Main Street, City Center",
-      description: "Modern apartment complex with great amenities",
-      space_available: 3,
-      property_image: "https://ionicframework.com/docs/img/demos/avatar.svg",
-      tags: ["AC Room", "Furnished"],
-      owner_id: 1,
-      created_at: "2024-01-01T00:00:00Z",
-      updated_at: "2024-01-01T00:00:00Z"
-    },
-    {
-      id: 2,
-      name: "Downtown Residences",
-      address: "456 Oak Avenue, Downtown",
-      description: "Luxury living in the heart of the city",
-      space_available: 1,
-      property_image: "https://ionicframework.com/docs/img/demos/avatar.svg",
-      tags: ["Premium", "Pet Friendly"],
-      owner_id: 2,
-      created_at: "2024-01-01T00:00:00Z",
-      updated_at: "2024-01-01T00:00:00Z"
-    },
-    {
-      id: 3,
-      name: "Garden View Complex",
-      address: "789 Pine Street, Suburbs",
-      description: "Peaceful living with beautiful garden views",
-      space_available: 2,
-      property_image: "https://ionicframework.com/docs/img/demos/avatar.svg",
-      tags: ["Garden View", "Quiet"],
-      owner_id: 3,
-      created_at: "2024-01-01T00:00:00Z",
-      updated_at: "2024-01-01T00:00:00Z"
-    },
-    {
-      id: 4,
-      name: "Riverside Apartments",
-      address: "321 River Road, Riverside",
-      description: "Scenic riverside location with modern facilities",
-      space_available: 4,
-      property_image: "https://ionicframework.com/docs/img/demos/avatar.svg",
-      tags: ["Riverside", "Modern"],
-      owner_id: 4,
-      created_at: "2024-01-01T00:00:00Z",
-      updated_at: "2024-01-01T00:00:00Z"
-    },
-    {
-      id: 5,
-      name: "Mountain View Lodge",
-      address: "654 Hill Street, Mountain View",
-      description: "Breathtaking mountain views and luxury amenities",
-      space_available: 1,
-      property_image: "https://ionicframework.com/docs/img/demos/avatar.svg",
-      tags: ["Mountain View", "Luxury"],
-      owner_id: 5,
-      created_at: "2024-01-01T00:00:00Z",
-      updated_at: "2024-01-01T00:00:00Z"
+  const dispatch = useAppDispatch()
+  const { propertyAds, isLoading } = useAppSelector((state) => state.propertyAd)
+
+  useEffect(() => {
+    const load = async () => {
+      showLoadingSpinner('Loading properties...')
+      try {
+        await dispatch(fetchAllPropertyAds({ is_active: true }))
+      } finally {
+        stopLoadingSpinner()
+      }
     }
-  ];
+    load()
+  }, [dispatch])
   
   return (
     <>
@@ -80,11 +34,19 @@ const FindProperty = () => {
               <IonTitle size="large">Find Properties</IonTitle>
             </IonToolbar>
           </IonHeader>
-          <IonList lines='inset' inset={true}>
-            {mockProperties.map((property) => (
-              <PropertyCard key={property.id} property={property} />
-            ))}
-          </IonList>
+          {(!propertyAds || propertyAds.length === 0) && !isLoading ? (
+            <div className='ion-text-center ion-padding ion-margin-top'>
+              <IonText>
+                <p>No property ads found.</p>
+              </IonText>
+            </div>
+          ) : (
+            <IonList lines='inset' inset={true}>
+              {propertyAds.map((ad) => (
+                <PropertyAd key={ad.id} ad={ad} />
+              ))}
+            </IonList>
+          )}
           <IonFab vertical="bottom" horizontal="end" slot="fixed" >
             <IonFabButton routerLink="/tenant/group-detail">
               <IonLabel>test</IonLabel>

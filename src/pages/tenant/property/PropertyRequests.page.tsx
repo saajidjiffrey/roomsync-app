@@ -1,9 +1,27 @@
-import { IonContent, IonHeader, IonList, IonPage, IonTitle, IonToolbar } from "@ionic/react"
+import { IonContent, IonHeader, IonList, IonPage, IonTitle, IonToolbar, IonText } from "@ionic/react"
 import TenantPropertyRequestCard from "../../../components/tenant/PropertyRequest/TenantPropertyRequestCard"
 import PageHeader from "../../../components/common/PageHeader"
 import AppMenu from "../../../components/common/AppMenu"
+import { useEffect } from "react"
+import { useAppDispatch, useAppSelector } from "../../../store/hooks"
+import { fetchMyJoinRequests } from "../../../store/slices/propertyJoinRequestSlice"
+import { showLoadingSpinner, stopLoadingSpinner } from "../../../utils/spinnerUtils"
 
 const PropertyRequests = () => {
+  const dispatch = useAppDispatch()
+  const { myRequests, isLoading } = useAppSelector((state) => state.joinRequest)
+
+  useEffect(() => {
+    const load = async () => {
+      showLoadingSpinner('Loading requests...')
+      try {
+        await dispatch(fetchMyJoinRequests())
+      } finally {
+        stopLoadingSpinner()
+      }
+    }
+    load()
+  }, [dispatch])
   return (
     <>
       <AppMenu menuId="main-content"/>
@@ -15,11 +33,19 @@ const PropertyRequests = () => {
               <IonTitle size="large">Property Requests</IonTitle>
             </IonToolbar>
           </IonHeader>
-          <IonList lines='inset' inset={true}>
-            <TenantPropertyRequestCard />
-            <TenantPropertyRequestCard />
-            <TenantPropertyRequestCard />
-          </IonList>
+          {(!myRequests || myRequests.length === 0) && !isLoading ? (
+            <div className='ion-text-center ion-padding ion-margin-top'>
+              <IonText>
+                <p>No requests found.</p>
+              </IonText>
+            </div>
+          ) : (
+            <IonList lines='inset' inset={true}>
+              {myRequests.map((req) => (
+                <TenantPropertyRequestCard key={req.id} request={req} />
+              ))}
+            </IonList>
+          )}
         </IonContent>
       </IonPage>
     </>

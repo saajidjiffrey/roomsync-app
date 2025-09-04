@@ -15,10 +15,10 @@ const TenantRequest: React.FC<Props> = ({ request }) => {
     <IonItemSliding>
       <IonItem>
         <IonAvatar aria-hidden="true" slot="start" className='user-avatar ion-align-self-start'>
-          <img alt="" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
+          <img alt="" src={"/images/user_placeholder.jpg"} />
         </IonAvatar>
         <IonLabel className='ion-align-self-start'>
-          <strong>{request.tenant?.name ?? `Tenant #${request.tenant_id}`}</strong>
+          <strong>{request.tenant?.tenantUser?.full_name ?? `${request.tenant?.tenantUser?.full_name} #${request.tenant_id}`}</strong>
           <IonNote color="medium" className="ion-text-wrap">
             Wants to be a tenant of the property <span>{request.propertyAd?.property?.name ?? `Ad #${request.property_ad_id}`}</span>
           </IonNote>

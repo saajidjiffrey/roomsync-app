@@ -8,8 +8,8 @@ const LandingPage: React.FC = () => {
     <IonPage>
       <IonContent fullscreen>
         <IonImg
-          src="https://docs-demo.ionic.io/assets/madison.jpg"
-          alt="The Wisconsin State Capitol building in Madison, WI at night"
+          src="/images/landing_page.jpg"
+          alt="RoomSync"
         ></IonImg>
         <div className='ion-padding'>
           <IonTitle size="large" className='ion-no-padding'>Welcome</IonTitle>
