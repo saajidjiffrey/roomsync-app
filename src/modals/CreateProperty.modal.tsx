@@ -20,6 +20,7 @@ import {
 import { addOutline, cameraOutline, closeOutline } from 'ionicons/icons';
 import { useAppDispatch } from '../store/hooks';
 import { createProperty } from '../store/slices/propertySlice';
+import { showLoadingSpinner, stopLoadingSpinner } from '../utils/spinnerUtils';
 
 interface FormErrors {
   name?: string;
@@ -33,9 +34,6 @@ interface FormErrors {
 
 const CreatePropertyModal = ({ dismiss }: { dismiss: (data?: string | null | undefined | number, role?: string) => void }) => {
   const dispatch = useAppDispatch();
-  // Note: You'll need to add propertySlice to your store configuration
-  // const isLoading = useAppSelector(selectPropertyLoading);
-  const [isLoading, setIsLoading] = useState(false);
 
   const [errors, setErrors] = useState<FormErrors>({});
   const [formData, setFormData] = useState({
@@ -118,11 +116,11 @@ const CreatePropertyModal = ({ dismiss }: { dismiss: (data?: string | null | und
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!validateForm() || isLoading) {
+    if (!validateForm()) {
       return;
     }
 
-    setIsLoading(true);
+    showLoadingSpinner('Creating property...');
     
     try {
       const createPropertyData = {
@@ -148,7 +146,7 @@ const CreatePropertyModal = ({ dismiss }: { dismiss: (data?: string | null | und
     } catch (error) {
       console.error('Create property error:', error);
     } finally {
-      setIsLoading(false);
+      stopLoadingSpinner();
     }
   };
 
@@ -163,8 +161,8 @@ const CreatePropertyModal = ({ dismiss }: { dismiss: (data?: string | null | und
           </IonButtons>
           <IonTitle>Create Property</IonTitle>
           <IonButtons slot="end">
-            <IonButton onClick={handleSubmit} strong={true} disabled={isLoading}>
-              {isLoading ? 'Creating...' : 'Confirm'}
+            <IonButton onClick={handleSubmit} strong={true}>
+              Confirm
             </IonButton>
           </IonButtons>
         </IonToolbar>

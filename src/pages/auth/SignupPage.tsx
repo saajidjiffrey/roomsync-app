@@ -1,8 +1,9 @@
-import { IonButton, IonContent, IonFooter, IonHeader, IonInput, IonItem, IonList, IonPage, IonSelect, IonSelectOption, IonTitle, IonToolbar, IonText, IonSpinner, IonInputPasswordToggle } from '@ionic/react';
+import { IonButton, IonContent, IonFooter, IonHeader, IonInput, IonItem, IonList, IonPage, IonSelect, IonSelectOption, IonTitle, IonToolbar, IonText, IonInputPasswordToggle } from '@ionic/react';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { useHistory } from 'react-router';
 import toastService from '../../services/toast';
+import { showLoadingSpinner, stopLoadingSpinner } from '../../utils/spinnerUtils';
 import './SignupPage.css';
 
 interface FormErrors {
@@ -122,6 +123,8 @@ const SignupPage: React.FC = () => {
       return;
     }
 
+    showLoadingSpinner('Creating your account...');
+    
     try {
       // Map role from UI to API format
       const roleMapping: { [key: string]: string } = {
@@ -145,6 +148,8 @@ const SignupPage: React.FC = () => {
       // Error is handled by the Redux slice and shown via useEffect above
       // Don't throw the error to prevent page refresh
       console.error('Registration error:', error);
+    } finally {
+      stopLoadingSpinner();
     }
   };
 
@@ -301,14 +306,7 @@ const SignupPage: React.FC = () => {
           onClick={handleSubmit}
           disabled={isLoading}
         >
-          {isLoading ? (
-            <>
-              <IonSpinner name="crescent" />
-              Creating Account...
-            </>
-          ) : (
-            'Signup'
-          )}
+          Signup
         </IonButton>
       </IonFooter>
     </IonPage>

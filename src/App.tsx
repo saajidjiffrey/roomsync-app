@@ -10,6 +10,7 @@ import { useEffect } from 'react';
 import { useAppDispatch } from './store/hooks';
 import { initializeAuth } from './store/slices/authSlice';
 import ErrorBoundary from './components/common/ErrorBoundary';
+import LoadingSpinner from './components/common/LoadingSpinner';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -63,6 +64,7 @@ const AppContent: React.FC = () => {
       <IonReactRouter>
         <AppRoutes />
       </IonReactRouter>
+      <LoadingSpinner />
     </IonApp>
   );
 };

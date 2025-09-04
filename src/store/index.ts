@@ -5,12 +5,14 @@ import storage from 'redux-persist/lib/storage'
 import counterReducer from './slices/counterSlice'
 import authReducer from './slices/authSlice'
 import propertyReducer from './slices/propertySlice'
+import spinnerReducer from './slices/spinnerSlice'
 import { errorToastMiddleware } from './middleware/errorToastMiddleware'
 
 const rootReducer = combineReducers({
   counter: counterReducer,
   auth: authReducer,
   property: propertyReducer,
+  spinner: spinnerReducer,
 })
 
 const persistConfig = {

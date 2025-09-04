@@ -1,8 +1,9 @@
-import { IonButton, IonContent, IonFooter, IonHeader, IonInput, IonItem, IonList, IonPage, IonTitle, IonToolbar, IonText, IonSpinner, IonInputPasswordToggle } from '@ionic/react';
+import { IonButton, IonContent, IonFooter, IonHeader, IonInput, IonItem, IonList, IonPage, IonTitle, IonToolbar, IonText, IonInputPasswordToggle } from '@ionic/react';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { useHistory } from 'react-router';
 import toastService from '../../services/toast';
+import { showLoadingSpinner, stopLoadingSpinner } from '../../utils/spinnerUtils';
 import './LoginPage.css';
 
 const LoginPage: React.FC = () => {
@@ -67,6 +68,8 @@ const LoginPage: React.FC = () => {
       return;
     }
 
+    showLoadingSpinner('Logging you in...');
+    
     try {
       await login({ email, password });
       // Success toast will be shown in the Redux slice
@@ -75,6 +78,8 @@ const LoginPage: React.FC = () => {
       // Error is handled by the Redux slice and shown via useEffect above
       // Don't throw the error to prevent page refresh
       console.error('Login error:', error);
+    } finally {
+      stopLoadingSpinner();
     }
   };
 
@@ -143,14 +148,7 @@ const LoginPage: React.FC = () => {
           onClick={handleSubmit}
           disabled={isLoading}
         >
-          {isLoading ? (
-            <>
-              <IonSpinner name="crescent" />
-              Logging in...
-            </>
-          ) : (
-            'Login'
-          )}
+          Login
         </IonButton>
       </IonFooter>
     </IonPage>

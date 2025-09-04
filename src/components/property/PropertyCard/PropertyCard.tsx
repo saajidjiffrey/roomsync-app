@@ -1,32 +1,38 @@
 import { IonAvatar, IonChip, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonLabel, IonNote, IonText } from '@ionic/react';
 import React from 'react';
+import { Property } from '../../../types/property';
 import './PropertyCard.css';
 
-const PropertyCard: React.FC = () => {
+interface PropertyCardProps {
+  property: Property;
+}
+
+const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
 
   return (
     <IonItemSliding>
       <IonItemOptions side="start">
         <IonItemOption color="success">Archive</IonItemOption>
       </IonItemOptions>
-      <IonItem button={true} detail={true} href='/owner/property-details' routerDirection='forward'>
+      <IonItem button={true} detail={true} routerLink={`/owner/property-details/${property.id}`} routerDirection='forward'>
         <IonAvatar aria-hidden="true" slot="start" className='property-avatar ion-align-self-start avatar-square'>
-          <img alt="" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
+          <img alt="" src={property.property_image || "https://ionicframework.com/docs/img/demos/avatar.svg"} />
         </IonAvatar>
         <IonLabel className='ion-align-self-start'>
-          <strong>Property Name</strong>
+          <strong>{property.name}</strong>
           <IonNote color="medium" className="ion-text-wrap">
-            123, King's street, Kandy
+            {property.address}
           </IonNote>
           <br />
           <IonText color="primary" className='ion-text-wrap'>
             <p>
-              02 remaining spaces available
+              {property.space_available} remaining spaces available
             </p>
           </IonText>
           <div>
-            <IonChip color="dark">AC Room</IonChip>
-            <IonChip color="dark">AC Room</IonChip>
+            {property.tags && property.tags.map((tag, index) => (
+              <IonChip key={index} color="dark">{tag}</IonChip>
+            ))}
           </div>
         </IonLabel>
       </IonItem>
