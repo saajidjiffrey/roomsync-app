@@ -26,17 +26,40 @@ export const login = createAsyncThunk(
         localStorage.setItem('user', JSON.stringify(response.data.user));
         return response.data;
       } else {
-        return rejectWithValue(response.message || 'Login failed');
+        // Handle validation errors or other API errors
+        let errorMessage = response.message || 'Login failed';
+        
+        // If there are specific field errors, format them nicely
+        if (response.errors && Array.isArray(response.errors)) {
+          const fieldErrors = response.errors.map((err) => err.message).join(', ');
+          errorMessage = fieldErrors || errorMessage;
+        }
+        
+        return rejectWithValue(errorMessage);
       }
     } catch (error: unknown) {
       const apiError = error as ApiError;
       let errorMessage = 'Login failed';
       
       // Provide more specific error messages
-      if (apiError.response?.status === 401) {
+      if (apiError.response?.status === 400) {
+        // Handle validation errors from 400 response
+        if (apiError.response.data?.errors && Array.isArray(apiError.response.data.errors)) {
+          const fieldErrors = apiError.response.data.errors.map((err) => err.message).join(', ');
+          errorMessage = fieldErrors;
+        } else {
+          errorMessage = apiError.response.data?.message || 'Invalid input data';
+        }
+      } else if (apiError.response?.status === 401) {
         errorMessage = 'Invalid email or password';
       } else if (apiError.response?.status === 422) {
-        errorMessage = apiError.response.data?.message || 'Invalid input data';
+        // Handle validation errors from response
+        if (apiError.response.data?.errors && Array.isArray(apiError.response.data.errors)) {
+          const fieldErrors = apiError.response.data.errors.map((err) => err.message).join(', ');
+          errorMessage = fieldErrors;
+        } else {
+          errorMessage = apiError.response.data?.message || 'Invalid input data';
+        }
       } else if (apiError.response?.status === 500) {
         errorMessage = 'Server error. Please try again later.';
       } else if (apiError.message) {
@@ -59,17 +82,40 @@ export const register = createAsyncThunk(
         localStorage.setItem('user', JSON.stringify(response.data.user));
         return response.data;
       } else {
-        return rejectWithValue(response.message || 'Registration failed');
+        // Handle validation errors or other API errors
+        let errorMessage = response.message || 'Registration failed';
+        
+        // If there are specific field errors, format them nicely
+        if (response.errors && Array.isArray(response.errors)) {
+          const fieldErrors = response.errors.map((err) => err.message).join(', ');
+          errorMessage = fieldErrors || errorMessage;
+        }
+        
+        return rejectWithValue(errorMessage);
       }
     } catch (error: unknown) {
       const apiError = error as ApiError;
       let errorMessage = 'Registration failed';
       
       // Provide more specific error messages
-      if (apiError.response?.status === 409) {
+      if (apiError.response?.status === 400) {
+        // Handle validation errors from 400 response
+        if (apiError.response.data?.errors && Array.isArray(apiError.response.data.errors)) {
+          const fieldErrors = apiError.response.data.errors.map((err) => err.message).join(', ');
+          errorMessage = fieldErrors;
+        } else {
+          errorMessage = apiError.response.data?.message || 'Invalid input data';
+        }
+      } else if (apiError.response?.status === 409) {
         errorMessage = 'Email already exists. Please use a different email.';
       } else if (apiError.response?.status === 422) {
-        errorMessage = apiError.response.data?.message || 'Invalid input data';
+        // Handle validation errors from response
+        if (apiError.response.data?.errors && Array.isArray(apiError.response.data.errors)) {
+          const fieldErrors = apiError.response.data.errors.map((err) => err.message).join(', ');
+          errorMessage = fieldErrors;
+        } else {
+          errorMessage = apiError.response.data?.message || 'Invalid input data';
+        }
       } else if (apiError.response?.status === 500) {
         errorMessage = 'Server error. Please try again later.';
       } else if (apiError.message) {
@@ -189,6 +235,8 @@ const authSlice = createSlice({
       .addCase(login.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
+        // Show error toast
+        toastService.error(action.payload as string);
       });
 
     // Register
@@ -209,6 +257,8 @@ const authSlice = createSlice({
       .addCase(register.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
+        // Show error toast
+        toastService.error(action.payload as string);
       });
 
     // Get Profile
@@ -225,6 +275,8 @@ const authSlice = createSlice({
       .addCase(getProfile.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
+        // Show error toast
+        toastService.error(action.payload as string);
       });
 
     // Update Password
@@ -241,6 +293,8 @@ const authSlice = createSlice({
       .addCase(updatePassword.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
+        // Show error toast
+        toastService.error(action.payload as string);
       });
 
     // Logout
@@ -260,6 +314,8 @@ const authSlice = createSlice({
         state.isAuthenticated = false;
         state.user = null;
         state.token = null;
+        // Show error toast
+        toastService.error('Logout failed');
       });
   },
 });

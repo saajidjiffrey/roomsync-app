@@ -1,4 +1,4 @@
-import { IonButton, IonContent, IonFooter, IonHeader, IonInput, IonItem, IonList, IonPage, IonSelect, IonSelectOption, IonTitle, IonToolbar, IonText, IonSpinner } from '@ionic/react';
+import { IonButton, IonContent, IonFooter, IonHeader, IonInput, IonItem, IonList, IonPage, IonSelect, IonSelectOption, IonTitle, IonToolbar, IonText, IonSpinner, IonInputPasswordToggle } from '@ionic/react';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { useHistory } from 'react-router';
@@ -260,7 +260,9 @@ const SignupPage: React.FC = () => {
                 value={formData.password}
                 onIonInput={(e) => handleInputChange('password', e.detail.value || '')}
                 className={errors.password ? 'ion-invalid' : ''}
-              />
+               >
+                <IonInputPasswordToggle slot="end"></IonInputPasswordToggle>
+              </IonInput>
             </IonItem>
             {errors.password && (
               <IonText color="danger" className="ion-padding-start">
@@ -278,7 +280,9 @@ const SignupPage: React.FC = () => {
                 value={formData.confirmPassword}
                 onIonInput={(e) => handleInputChange('confirmPassword', e.detail.value || '')}
                 className={errors.confirmPassword ? 'ion-invalid' : ''}
-              />
+              >
+                <IonInputPasswordToggle slot="end"></IonInputPasswordToggle>
+              </IonInput>
             </IonItem>
             {errors.confirmPassword && (
               <IonText color="danger" className="ion-padding-start">

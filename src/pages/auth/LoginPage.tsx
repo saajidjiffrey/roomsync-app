@@ -1,4 +1,4 @@
-import { IonButton, IonContent, IonFooter, IonHeader, IonInput, IonItem, IonList, IonPage, IonTitle, IonToolbar, IonText, IonSpinner } from '@ionic/react';
+import { IonButton, IonContent, IonFooter, IonHeader, IonInput, IonItem, IonList, IonPage, IonTitle, IonToolbar, IonText, IonSpinner, IonInputPasswordToggle } from '@ionic/react';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { useHistory } from 'react-router';
@@ -122,7 +122,9 @@ const LoginPage: React.FC = () => {
                 value={password}
                 onIonInput={(e) => setPassword(e.detail.value || '')}
                 className={errors.password ? 'ion-invalid' : ''}
-              />
+              >
+                              <IonInputPasswordToggle slot="end"></IonInputPasswordToggle>
+              </IonInput>
             </IonItem>
             {errors.password && (
               <IonText color="danger" className="ion-padding-start">

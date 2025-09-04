@@ -4,10 +4,13 @@ import storage from 'redux-persist/lib/storage'
 
 import counterReducer from './slices/counterSlice'
 import authReducer from './slices/authSlice'
+import propertyReducer from './slices/propertySlice'
+import { errorToastMiddleware } from './middleware/errorToastMiddleware'
 
 const rootReducer = combineReducers({
   counter: counterReducer,
   auth: authReducer,
+  property: propertyReducer,
 })
 
 const persistConfig = {
@@ -26,7 +29,7 @@ export const store = configureStore({
       serializableCheck: {
         ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE'],
       },
-    }),
+    }).concat(errorToastMiddleware),
 })
 
 export const persistor = persistStore(store)

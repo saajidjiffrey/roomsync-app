@@ -44,26 +44,69 @@ api.interceptors.response.use(
   }
 );
 
+// Helper function to handle API errors and extract validation errors
+function handleApiError(error: unknown): Error {
+  if (axios.isAxiosError(error)) {
+    const axiosError = error as AxiosError;
+    
+    // For 400 validation errors, extract the error response data
+    if (axiosError.response?.status === 400 && axiosError.response.data) {
+      const errorData = axiosError.response.data as { errors?: Array<{ field: string; message: string }> };
+      
+      // If it's a validation error with field-specific errors, create a custom error
+      if (errorData.errors && Array.isArray(errorData.errors)) {
+        const validationError = new Error('Validation failed');
+        (validationError as Error & { response: { status: number; data: unknown } }).response = {
+          status: 400,
+          data: errorData
+        };
+        return validationError;
+      }
+    }
+    
+    // For other errors, preserve the original error structure
+    return axiosError;
+  }
+  
+  return error as Error;
+}
+
 // Generic API methods
 export const apiService = {
   get: async <T>(url: string): Promise<ApiResponse<T>> => {
-    const response = await api.get<ApiResponse<T>>(url);
-    return response.data;
+    try {
+      const response = await api.get<ApiResponse<T>>(url);
+      return response.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
   },
 
   post: async <T>(url: string, data?: unknown): Promise<ApiResponse<T>> => {
-    const response = await api.post<ApiResponse<T>>(url, data);
-    return response.data;
+    try {
+      const response = await api.post<ApiResponse<T>>(url, data);
+      return response.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
   },
 
   put: async <T>(url: string, data?: unknown): Promise<ApiResponse<T>> => {
-    const response = await api.put<ApiResponse<T>>(url, data);
-    return response.data;
+    try {
+      const response = await api.put<ApiResponse<T>>(url, data);
+      return response.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
   },
 
   delete: async <T>(url: string): Promise<ApiResponse<T>> => {
-    const response = await api.delete<ApiResponse<T>>(url);
-    return response.data;
+    try {
+      const response = await api.delete<ApiResponse<T>>(url);
+      return response.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
   },
 };
 

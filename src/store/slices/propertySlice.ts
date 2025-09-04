@@ -4,8 +4,24 @@ import { ApiError } from '../../types/api';
 import { CreatePropertyRequest, PropertyState } from '../../types/property';
 import toastService from '../../services/toast';
 
-
-
+// Helper function to extract error message from API error
+const extractErrorMessage = (error: unknown, fallbackMessage: string): string => {
+  const apiError = error as ApiError;
+  
+  // Extract specific field error message if available
+  if (apiError.response?.data?.errors && apiError.response.data.errors.length > 0) {
+    // Get the first field error message
+    return apiError.response.data.errors[0].message;
+  } else if (apiError.response?.data?.message) {
+    // Fallback to general message
+    return apiError.response.data.message;
+  } else if (apiError.message) {
+    // Fallback to error message
+    return apiError.message;
+  }
+  
+  return fallbackMessage;
+};
 
 // Async thunks
 export const createProperty = createAsyncThunk(
@@ -15,8 +31,7 @@ export const createProperty = createAsyncThunk(
       const response = await propertyAPI.createProperty(data);
       return response.data;
     } catch (error: unknown) {
-      const apiError = error as ApiError;
-      return rejectWithValue(apiError.response?.data?.message || apiError.message || 'Create property failed');
+      return rejectWithValue(extractErrorMessage(error, 'Create property failed'));
     }
   }
 );
@@ -28,8 +43,7 @@ export const fetchProperties = createAsyncThunk(
       const response = await propertyAPI.getAllProperties();
       return response.data;
     } catch (error: unknown) {
-      const apiError = error as ApiError;
-      return rejectWithValue(apiError.response?.data?.message || apiError.message || 'Fetch properties failed');
+      return rejectWithValue(extractErrorMessage(error, 'Fetch properties failed'));
     }
   }
 );
@@ -41,8 +55,7 @@ export const fetchMyProperties = createAsyncThunk(
       const response = await propertyAPI.getMyProperties();
       return response.data;
     } catch (error: unknown) {
-      const apiError = error as ApiError;
-      return rejectWithValue(apiError.response?.data?.message || apiError.message || 'Fetch my properties failed');
+      return rejectWithValue(extractErrorMessage(error, 'Fetch my properties failed'));
     }
   }
 );
@@ -54,8 +67,7 @@ export const fetchPropertyById = createAsyncThunk(
       const response = await propertyAPI.getPropertyById(id);
       return response.data;
     } catch (error: unknown) {
-      const apiError = error as ApiError;
-      return rejectWithValue(apiError.response?.data?.message || apiError.message || 'Fetch property failed');
+      return rejectWithValue(extractErrorMessage(error, 'Fetch property failed'));
     }
   }
 );
@@ -67,8 +79,7 @@ export const updateProperty = createAsyncThunk(
       const response = await propertyAPI.updateProperty(id, data);
       return response.data;
     } catch (error: unknown) {
-      const apiError = error as ApiError;
-      return rejectWithValue(apiError.response?.data?.message || apiError.message || 'Update property failed');
+      return rejectWithValue(extractErrorMessage(error, 'Update property failed'));
     }
   }
 );
@@ -80,8 +91,7 @@ export const deleteProperty = createAsyncThunk<number, number, { rejectValue: st
       await propertyAPI.deleteProperty(id);
       return id;
     } catch (error: unknown) {
-      const apiError = error as ApiError;
-      return rejectWithValue(apiError.response?.data?.message || apiError.message || 'Delete property failed');
+      return rejectWithValue(extractErrorMessage(error, 'Delete property failed'));
     }
   }
 );
@@ -126,7 +136,8 @@ const propertySlice = createSlice({
       .addCase(createProperty.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
-        toastService.error(action.payload as string || 'Failed to create property');
+        // Error toast is handled automatically by middleware
+        // toastService.error(action.payload as string || 'Failed to create property');
       });
 
     // Fetch Properties
@@ -206,7 +217,7 @@ const propertySlice = createSlice({
       .addCase(updateProperty.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
-        toastService.error(action.payload as string || 'Failed to update property');
+        // Error toast is handled automatically by middleware
       });
 
     // Delete Property
@@ -229,8 +240,8 @@ const propertySlice = createSlice({
       })
       .addCase(deleteProperty.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.payload as string;
-        toastService.error(action.payload as string || 'Failed to delete property');
+        state.error = null;
+        // Error toast is handled automatically by middleware
       });
   },
 });
