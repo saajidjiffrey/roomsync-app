@@ -13,6 +13,7 @@ import {
   getProfile,
   updatePassword,
   clearError,
+  refreshUserProfile,
 } from '../store/slices/authSlice';
 import { LoginRequest, RegisterRequest, PasswordUpdateRequest } from '../types/user';
 
@@ -40,6 +41,7 @@ export const useAuth = () => {
     getProfile: () => dispatch(getProfile()),
     updatePassword: (passwordData: PasswordUpdateRequest) => dispatch(updatePassword(passwordData)),
     clearError: () => dispatch(clearError()),
+    refreshUserProfile: () => dispatch(getProfile()),
     
     // Helper methods
     isAdmin: userRole === 'admin',

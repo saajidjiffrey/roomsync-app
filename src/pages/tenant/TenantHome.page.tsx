@@ -1,26 +1,79 @@
 import React from 'react';
 import { 
   IonPage, 
-  IonHeader, 
-  IonToolbar, 
-  IonTitle, 
   IonContent,
   IonLabel,
   IonListHeader,
   IonList,
-  IonItemGroup
+  IonItemGroup,
+  IonButton,
+  IonText
 } from '@ionic/react';
 import './TenantHome.css';
 import ExpenseCard from '../../components/expense/ExpenseCard';
+import { useAuth } from '../../hooks/useAuth';
+import { useHistory } from 'react-router-dom';
+import PageHeader from '../../components/common/PageHeader';
 
 const TenantHome: React.FC = () => {
+  const { user } = useAuth();
+  const history = useHistory();
+  
+  const propertyId = user?.tenant_profile?.property_id;
+  const groupId = user?.tenant_profile?.group_id;
+
+  // If no property, show join property message
+  if (!propertyId) {
+    return (
+      <IonPage>
+        <PageHeader title="Home" />
+        <IonContent className="ion-padding">
+          <div className="ion-text-center ion-margin-top">
+            <IonText>
+              <h2>Please join a property</h2>
+              <p>You need to join a property to access group features.</p>
+            </IonText>
+            <IonButton 
+              expand="block" 
+              onClick={() => history.push('/tenant/find-property')}
+              className="ion-margin-top"
+            >
+              Find Property
+            </IonButton>
+          </div>
+        </IonContent>
+      </IonPage>
+    );
+  }
+
+  // If no group, show join group message
+  if (!groupId) {
+    return (
+      <IonPage>
+        <PageHeader title="Home" />
+        <IonContent className="ion-padding">
+          <div className="ion-text-center ion-margin-top">
+            <IonText>
+              <h2>Please join a group</h2>
+              <p>You need to join a group to access expense and task features.</p>
+            </IonText>
+            <IonButton 
+              expand="block" 
+              onClick={() => history.push('/tenant/select-group')}
+              className="ion-margin-top"
+            >
+              Select Group
+            </IonButton>
+          </div>
+        </IonContent>
+      </IonPage>
+    );
+  }
+
+  // If both property and group exist, show normal home content
   return (
     <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle >Home</IonTitle>
-        </IonToolbar>
-      </IonHeader>
+      <PageHeader title="Home" />
 
       <IonContent fullscreen>
         {/* Group Information */}
@@ -52,18 +105,12 @@ const TenantHome: React.FC = () => {
             <IonLabel className='ion-no-margin'>Recent Expenses</IonLabel>
           </IonListHeader>
           <IonItemGroup>
-            {/* <IonItemDivider>
-              <IonLabel>May 26, 2025</IonLabel>
-            </IonItemDivider> */}
-            
             <ExpenseCard />
             <ExpenseCard />
             <ExpenseCard />
           </IonItemGroup>
         </IonList>
-        
       </IonContent>
-
     </IonPage>
   );
 };

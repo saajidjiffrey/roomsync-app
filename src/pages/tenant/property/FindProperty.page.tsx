@@ -1,7 +1,6 @@
 import { IonContent, IonFab, IonFabButton, IonHeader, IonLabel, IonList, IonPage, IonTitle, IonToolbar, IonText } from "@ionic/react"
 import PropertyAd from "../../../components/property/PropertyAd/PropertyAd"
 import PageHeader from "../../../components/common/PageHeader"
-import AppMenu from "../../../components/common/AppMenu"
 import { useEffect } from "react"
 import { showLoadingSpinner, stopLoadingSpinner } from "../../../utils/spinnerUtils"
 import { useAppDispatch, useAppSelector } from "../../../store/hooks"
@@ -24,9 +23,7 @@ const FindProperty = () => {
   }, [dispatch])
   
   return (
-    <>
-      <AppMenu menuId="main-content" />
-      <IonPage id="main-content">
+    <IonPage>
         <PageHeader title="Find Properties" />
         <IonContent fullscreen>
           <IonHeader collapse="condense">
@@ -53,9 +50,7 @@ const FindProperty = () => {
             </IonFabButton>
           </IonFab>
         </IonContent>
-      </IonPage>
-    </>
-    
+    </IonPage>
   )
 }
 

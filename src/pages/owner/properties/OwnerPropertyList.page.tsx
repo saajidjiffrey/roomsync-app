@@ -16,7 +16,6 @@ import { add } from 'ionicons/icons';
 import { OverlayEventDetail } from '@ionic/react/dist/types/components/react-component-lib/interfaces';
 import CreatePropertyModal from '../../../modals/CreateProperty.modal';
 import PageHeader from '../../../components/common/PageHeader';
-import AppMenu from '../../../components/common/AppMenu';
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { fetchMyProperties } from '../../../store/slices/propertySlice';
@@ -75,9 +74,7 @@ const OwnerPropertyPage: React.FC = () => {
   };
 
   return (
-    <>
-      <AppMenu menuId="main-content" />
-      <IonPage id="main-content">
+    <IonPage>
         <PageHeader title="My Properties" />
         <IonContent fullscreen>
           <IonHeader collapse="condense">
@@ -92,8 +89,7 @@ const OwnerPropertyPage: React.FC = () => {
             </IonFabButton>
           </IonFab>
         </IonContent>
-      </IonPage>
-    </>
+    </IonPage>
   );
 };
 

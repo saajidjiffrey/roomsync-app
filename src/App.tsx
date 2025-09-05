@@ -8,7 +8,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { store, persistor } from './store';
 import { useEffect } from 'react';
 import { useAppDispatch } from './store/hooks';
-import { initializeAuth } from './store/slices/authSlice';
+import { initializeAuth, getProfile } from './store/slices/authSlice';
 import ErrorBoundary from './components/common/ErrorBoundary';
 import LoadingSpinner from './components/common/LoadingSpinner';
 
@@ -50,7 +50,12 @@ const AuthInitializer: React.FC = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(initializeAuth());
+    const initializeApp = async () => {
+      dispatch(initializeAuth());
+      // Fetch the latest user profile after initializing auth
+      await dispatch(getProfile());
+    };
+    initializeApp();
   }, [dispatch]);
 
   return null;

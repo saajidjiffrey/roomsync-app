@@ -1,7 +1,6 @@
 import { IonContent, IonHeader, IonList, IonPage, IonTitle, IonToolbar, IonText } from "@ionic/react"
 import TenantPropertyRequestCard from "../../../components/tenant/PropertyRequest/TenantPropertyRequestCard"
 import PageHeader from "../../../components/common/PageHeader"
-import AppMenu from "../../../components/common/AppMenu"
 import { useEffect } from "react"
 import { useAppDispatch, useAppSelector } from "../../../store/hooks"
 import { fetchMyJoinRequests } from "../../../store/slices/propertyJoinRequestSlice"
@@ -23,9 +22,7 @@ const PropertyRequests = () => {
     load()
   }, [dispatch])
   return (
-    <>
-      <AppMenu menuId="main-content"/>
-      <IonPage id="main-content">
+    <IonPage>
         <PageHeader title="Property Requests" />
         <IonContent fullscreen>
           <IonHeader collapse="condense">
@@ -47,8 +44,7 @@ const PropertyRequests = () => {
             </IonList>
           )}
         </IonContent>
-      </IonPage>
-    </>
+    </IonPage>
   )
 }
 

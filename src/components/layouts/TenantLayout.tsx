@@ -13,40 +13,51 @@ import {
   ExpenseDetailPage 
 } from '../../pages/tenant';
 import TestRoute from '../../pages/tenant/TestRoute';
+import AppMenu from '../common/AppMenu';
 
 const TenantLayout: React.FC = () => {
+
   return (
     <>
+      <AppMenu menuId="tenant-content" />
       <IonTabs>
-        <IonRouterOutlet>
-          {/* Tab routes */}
-          <Route exact path="/tenant/find-property" component={FindPropertyPage} />
-          <Route exact path="/tenant/my-requests" component={PropertyRequestsPage} />
+        <IonRouterOutlet id="tenant-content">
+          {/* Main tab routes */}
+          <Route exact path="/tenant/home" component={TenantHome} />
+          <Route exact path="/tenant/expenses" component={TenantExpenses} />
+          <Route exact path="/tenant/tasks" component={TestRoute} />
+          <Route exact path="/tenant/notifications" component={TestRoute} />
           
           {/* Additional tenant routes */}
           <Route path="/tenant/property-details/:id" component={TenantPropertyDetailPage} />
-          <Route path="/tenant/select-group" component={SelectGroupPage} />
           <Route path="/tenant/group-detail" component={GroupDetailPage} />
-          <Route path="/tenant/home" component={TenantHome} />
-          <Route path="/tenant/expenses" component={TenantExpenses} />
           <Route path="/tenant/expenses-detail" component={ExpenseDetailPage} />
-          <Route path="/tenant/test" component={TestRoute} />
+          <Route path="/tenant/find-property" component={FindPropertyPage} />
+          <Route path="/tenant/select-group" component={SelectGroupPage} />
+          <Route path="/tenant/my-requests" component={PropertyRequestsPage} />
           
           {/* Default redirect */}
           <Route exact path="/tenant">
-            <Redirect to="/tenant/find-property" />
+            <Redirect to="/tenant/home" />
           </Route>
         </IonRouterOutlet>
         
         <IonTabBar slot="bottom">
-          <IonTabButton tab="find-property" href="/tenant/find-property">
+          <IonTabButton tab="home" href="/tenant/home">
             <IonIcon aria-hidden="true" icon={search} />
-            <IonLabel>Find Property</IonLabel>
+            <IonLabel>Home</IonLabel>
           </IonTabButton>
-          
-          <IonTabButton tab="my-requests" href="/tenant/my-requests">
+          <IonTabButton tab="expenses" href="/tenant/expenses">
             <IonIcon aria-hidden="true" icon={document} />
-            <IonLabel>My Requests</IonLabel>
+            <IonLabel>Expenses</IonLabel>
+          </IonTabButton>
+          <IonTabButton tab="tasks" href="/tenant/tasks">
+            <IonIcon aria-hidden="true" icon={document} />
+            <IonLabel>Tasks</IonLabel>
+          </IonTabButton>
+          <IonTabButton tab="notifications" href="/tenant/notifications">
+            <IonIcon aria-hidden="true" icon={document} />
+            <IonLabel>Notifications</IonLabel>
           </IonTabButton>
         </IonTabBar>
       </IonTabs>

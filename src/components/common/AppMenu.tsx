@@ -19,6 +19,8 @@ import {
   settingsOutline,
   helpOutline,
   informationCircleOutline,
+  peopleOutline,
+  homeOutline,
 } from 'ionicons/icons';
 import { useAuth } from '../../hooks/useAuth';
 import { useHistory } from 'react-router-dom';
@@ -86,6 +88,23 @@ const AppMenu: React.FC<AppMenuProps> = ({ menuId }) => {
 
         {/* Menu Items */}
         <IonList>
+          {user?.role === 'tenant' && (
+            <>
+              {user?.tenant_profile?.group_id && (
+                <IonItem button onClick={() => history.push('/tenant/group-detail')}>
+                  <IonIcon slot="start" icon={peopleOutline} />
+                  <IonLabel>View Group</IonLabel>
+                </IonItem>
+              )}
+              {/* If tenant has property_id, show View Property link */}
+              {user?.tenant_profile?.property_id && (
+                <IonItem button onClick={() => history.push(`/tenant/property-details/${user?.tenant_profile?.property_id}`)}>
+                  <IonIcon slot="start" icon={homeOutline} />
+                  <IonLabel>View Property</IonLabel>
+                </IonItem>
+              )}
+            </>
+          )}
           <IonItem button>
             <IonIcon slot="start" icon={personOutline} />
             <IonLabel>Profile</IonLabel>

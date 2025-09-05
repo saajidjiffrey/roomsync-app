@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   IonButtons,
   IonButton,
@@ -17,9 +17,18 @@ import {
   IonTextarea,
 } from '@ionic/react';
 import { cameraOutline } from 'ionicons/icons';
+import { useAuth } from '../hooks/useAuth';
+import { useAppDispatch } from '../store/hooks';
+import { createGroup } from '../store/slices/groupSlice';
 
 const CreateGroup = ({ dismiss }: { dismiss: (data?: string | null | undefined | number, role?: string) => void }) => {
-  const inputRef = useRef<HTMLIonInputElement>(null);
+  const nameRef = useRef<HTMLIonInputElement>(null);
+  const descriptionRef = useRef<HTMLIonTextareaElement>(null);
+  const { user, refreshUserProfile } = useAuth();
+  const dispatch = useAppDispatch();
+  const [isCreating, setIsCreating] = useState(false);
+
+  const propertyId = user?.tenant_profile?.property_id;
   return (
     <IonPage>
       <IonHeader>
@@ -31,8 +40,42 @@ const CreateGroup = ({ dismiss }: { dismiss: (data?: string | null | undefined |
           </IonButtons>
           <IonTitle>Create Group</IonTitle>
           <IonButtons slot="end">
-            <IonButton onClick={() => dismiss(inputRef.current?.value, 'confirm')} strong={true}>
-              Confirm
+            <IonButton 
+              onClick={async () => {
+                if (!propertyId) {
+                  console.error('No property ID available');
+                  return;
+                }
+
+                const groupName = nameRef.current?.value;
+                const groupDescription = descriptionRef.current?.value;
+
+                if (!groupName) {
+                  console.error('Group name is required');
+                  return;
+                }
+
+                setIsCreating(true);
+                try {
+                  await dispatch(createGroup({
+                    name: groupName.toString(),
+                    description: groupDescription?.toString(),
+                    property_id: propertyId
+                  }));
+                  
+                  // Refresh user profile to get updated group_id
+                  await refreshUserProfile();
+                  dismiss(groupName, 'confirm');
+                } catch (error) {
+                  console.error('Failed to create group:', error);
+                } finally {
+                  setIsCreating(false);
+                }
+              }} 
+              strong={true}
+              disabled={isCreating}
+            >
+              {isCreating ? 'Creating...' : 'Confirm'}
             </IonButton>
           </IonButtons>
         </IonToolbar>
@@ -69,16 +112,19 @@ const CreateGroup = ({ dismiss }: { dismiss: (data?: string | null | undefined |
           
           <IonItem>
             <IonInput 
+              ref={nameRef}
               labelPlacement="stacked" 
               mode='md' 
               type='text' 
               label="Group Name" 
               placeholder="Enter Group name"
+              required
             />
           </IonItem>
           
           <IonItem>
             <IonTextarea 
+              ref={descriptionRef}
               label="Description" 
               labelPlacement="stacked" 
               rows={5}

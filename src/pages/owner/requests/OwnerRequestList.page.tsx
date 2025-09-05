@@ -9,7 +9,6 @@ import {
 } from '@ionic/react';
 import { TenantRequest } from '../../../components/property/TenantRequest';
 import PageHeader from '../../../components/common/PageHeader';
-import AppMenu from '../../../components/common/AppMenu';
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { fetchOwnerReceivedJoinRequests, selectOwnerActiveJoinRequests } from '../../../store/slices/propertyJoinRequestSlice';
@@ -32,9 +31,7 @@ const OwnerRequests: React.FC = () => {
   }, [dispatch]);
 
   return (
-    <>
-      <AppMenu menuId="main-content" />
-      <IonPage id="main-content">
+    <IonPage>
         <PageHeader title="Requests" />
         <IonContent fullscreen>
           <IonHeader collapse="condense">
@@ -56,8 +53,7 @@ const OwnerRequests: React.FC = () => {
             </IonList>
           )}
         </IonContent>
-      </IonPage>
-    </>
+    </IonPage>
   );
 };
 

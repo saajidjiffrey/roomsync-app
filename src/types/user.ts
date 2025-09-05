@@ -10,6 +10,21 @@ export interface User {
   role: 'admin' | 'owner' | 'tenant';
   created_at: string;
   updated_at: string;
+  // When tenant, backend may include tenant profile with group_id and property_id
+  tenant_profile?: {
+    id: number;
+    user_id: number;
+    property_id?: number | null;
+    group_id?: number | null;
+    createdAt?: string;
+    updatedAt?: string;
+  };
+  owner_profile?: {
+    id: number;
+    user_id: number;
+    createdAt?: string;
+    updatedAt?: string;
+  };
 }
 
 export interface AuthResponse {

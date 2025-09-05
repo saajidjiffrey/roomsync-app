@@ -1,9 +1,6 @@
 import React from 'react';
 import { 
   IonPage, 
-  IonHeader, 
-  IonToolbar, 
-  IonTitle, 
   IonContent,
   IonLabel,
   IonListHeader,
@@ -16,17 +13,75 @@ import {
   IonFab,
   IonFabButton,
   IonIcon,
-  useIonModal
+  useIonModal,
+  IonButton,
+  IonText
 } from '@ionic/react';
 import ExpenseCard from '../../../components/expense/ExpenseCard';
 import { add } from 'ionicons/icons';
 import CreateExpenseModal from '../../../modals/CreateExpense.modal';
 import { OverlayEventDetail } from '@ionic/react/dist/types/components/react-component-lib/interfaces';
+import { useAuth } from '../../../hooks/useAuth';
+import { useHistory } from 'react-router-dom';
+import PageHeader from '../../../components/common/PageHeader';
 
 const Expenses: React.FC = () => {
+  const { user } = useAuth();
+  const history = useHistory();
   const [present, dismiss] = useIonModal(CreateExpenseModal, {
     dismiss: (data: string, role: string) => dismiss(data, role),
   });
+  
+  const propertyId = user?.tenant_profile?.property_id;
+  const groupId = user?.tenant_profile?.group_id;
+
+  // If no property, show join property message
+  if (!propertyId) {
+    return (
+      <IonPage>
+        <PageHeader title="Expenses" />
+        <IonContent className="ion-padding">
+          <div className="ion-text-center ion-margin-top">
+            <IonText>
+              <h2>Please join a property</h2>
+              <p>You need to join a property to access expense features.</p>
+            </IonText>
+            <IonButton 
+              expand="block" 
+              onClick={() => history.push('/tenant/find-property')}
+              className="ion-margin-top"
+            >
+              Find Property
+            </IonButton>
+          </div>
+        </IonContent>
+      </IonPage>
+    );
+  }
+
+  // If no group, show join group message
+  if (!groupId) {
+    return (
+      <IonPage>
+        <PageHeader title="Expenses" />
+        <IonContent className="ion-padding">
+          <div className="ion-text-center ion-margin-top">
+            <IonText>
+              <h2>Please join a group</h2>
+              <p>You need to join a group to access expense features.</p>
+            </IonText>
+            <IonButton 
+              expand="block" 
+              onClick={() => history.push('/tenant/select-group')}
+              className="ion-margin-top"
+            >
+              Select Group
+            </IonButton>
+          </div>
+        </IonContent>
+      </IonPage>
+    );
+  }
 
   function openModal() {
     present({
@@ -37,14 +92,11 @@ const Expenses: React.FC = () => {
       },
     });
   }
+
+  // If both property and group exist, show normal expenses content
   return (
     <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle >Expenses</IonTitle>
-        </IonToolbar>
-      </IonHeader>
-
+      <PageHeader title="Expenses" />
       <IonContent fullscreen>
         {/* Group Information */}
         <div className="p-3">

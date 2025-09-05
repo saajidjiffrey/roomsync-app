@@ -187,19 +187,11 @@ const authSlice = createSlice({
     // Initialize auth state from localStorage
     initializeAuth: (state) => {
       const token = localStorage.getItem('token');
-      const userStr = localStorage.getItem('user');
       
-      if (token && userStr) {
-        try {
-          const user = JSON.parse(userStr);
-          state.token = token;
-          state.user = user;
-          state.isAuthenticated = true;
-        } catch {
-          // Invalid user data, clear storage
-          localStorage.removeItem('token');
-          localStorage.removeItem('user');
-        }
+      if (token) {
+        state.token = token;
+        state.isAuthenticated = true;
+        // Don't set user from localStorage - let getProfile fetch the latest data
       }
     },
     
@@ -214,6 +206,11 @@ const authSlice = createSlice({
         state.user = { ...state.user, ...action.payload };
         localStorage.setItem('user', JSON.stringify(state.user));
       }
+    },
+    
+    // Refresh user profile from server
+    refreshUserProfile: (state) => {
+      // This will be handled by the getProfile thunk
     },
   },
   extraReducers: (builder) => {
@@ -271,6 +268,8 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.user = action.payload;
         state.error = null;
+        // Update localStorage with the latest user data
+        localStorage.setItem('user', JSON.stringify(action.payload));
       })
       .addCase(getProfile.rejected, (state, action) => {
         state.isLoading = false;
@@ -321,7 +320,7 @@ const authSlice = createSlice({
 });
 
 // Export actions
-export const { initializeAuth, clearError, updateUser } = authSlice.actions;
+export const { initializeAuth, clearError, updateUser, refreshUserProfile } = authSlice.actions;
 
 // Export selectors
 export const selectAuth = (state: { auth: AuthState }) => state.auth;

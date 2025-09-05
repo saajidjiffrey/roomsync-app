@@ -13,7 +13,6 @@ import {
 import { add } from 'ionicons/icons';
 import { useEffect } from 'react';
 import PageHeader from '../../../components/common/PageHeader';
-import AppMenu from '../../../components/common/AppMenu';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { fetchMyPropertyAds } from '../../../store/slices/propertyAdSlice';
 import { showLoadingSpinner, stopLoadingSpinner } from '../../../utils/spinnerUtils';
@@ -43,9 +42,7 @@ const OwnerAdsPage: React.FC = () => {
     loadAds();
   }, [dispatch]);
   return (
-    <>
-      <AppMenu menuId="main-content" />
-      <IonPage id="main-content">
+    <IonPage>
         <PageHeader title="My Ads" />
         <IonContent fullscreen>
           <IonHeader collapse="condense">
@@ -80,8 +77,7 @@ const OwnerAdsPage: React.FC = () => {
             </IonFabButton>
           </IonFab>
         </IonContent>
-      </IonPage>
-    </>
+    </IonPage>
   );
 };
 

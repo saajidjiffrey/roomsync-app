@@ -23,7 +23,7 @@ import AdminLayout from '../components/layouts/AdminLayout';
 import ProtectedRoute from '../components/common/ProtectedRoute';
 
 const AppRoutes: React.FC = () => {
-  const { isAuthenticated, isLoading, userRole, clearError } = useAuth();
+  const { isAuthenticated, isLoading, userRole, user, clearError } = useAuth();
   const location = useLocation();
 
   // Clear auth errors when navigating to public routes
@@ -46,7 +46,7 @@ const AppRoutes: React.FC = () => {
       case 'owner':
         return '/owner/my-properties';
       case 'tenant':
-        return '/tenant/find-property';
+        return '/tenant/home';
       case 'admin':
         return '/admin/dashboard';
       default:
