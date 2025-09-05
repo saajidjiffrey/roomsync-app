@@ -2,8 +2,14 @@ import { IonAvatar, IonChip, IonItem, IonItemOption, IonItemOptions, IonItemSlid
 import React from 'react';
 import './GroupCard.css';
 
-const GroupCard: React.FC = () => {
+type GroupCardProps = {
+  name?: string;
+  description?: string;
+  memberCount?: number;
+  onView?: () => void;
+};
 
+const GroupCard: React.FC<GroupCardProps> = ({ name = 'Group Name', description, memberCount, onView }) => {
   return (
     <IonItemSliding>
       <IonItem button={true} detail={true}>
@@ -11,19 +17,19 @@ const GroupCard: React.FC = () => {
           <img alt="" src={"/images/group_placeholder.jpg"} />
         </IonAvatar>
         <IonLabel className='ion-align-self-start'>
-          <strong>Group Name</strong>
+          <strong>{name}</strong>
           <IonText color="medium" className='ion-text-wrap'>
             <p>
-            Lorem ipsum dolor sit amet consectetur adipiscing elit Ut et massa mi. Aliquam in hendrerit.
+            {description || 'No description provided.'}
             </p>
           </IonText>
           <div>
-            <IonChip color="primary">5 Tenants</IonChip>
+            <IonChip color="primary">{typeof memberCount === 'number' ? `${memberCount} Tenants` : 'Tenants'}</IonChip>
           </div>
         </IonLabel>
       </IonItem>
       <IonItemOptions side="end">
-        <IonItemOption>View</IonItemOption>
+        <IonItemOption onClick={onView}>View</IonItemOption>
       </IonItemOptions>
     </IonItemSliding>
   );

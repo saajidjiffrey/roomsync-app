@@ -11,6 +11,7 @@ import {
   IonPage,
   IonText,
   IonActionSheet,
+  IonItem,
 } from '@ionic/react';
 import './TenantPropertyDetail.css';
 import { GroupCard } from '../../../components/group/GroupCard';
@@ -22,11 +23,14 @@ import { fetchPropertyAdById } from '../../../store/slices/propertyAdSlice';
 import { showLoadingSpinner, stopLoadingSpinner } from '../../../utils/spinnerUtils';
 import { createJoinRequest } from '../../../store/slices/propertyJoinRequestSlice';
 import PageHeader from '../../../components/common/PageHeader';
+import { fetchAvailableGroups, selectAvailableGroups, selectGroupIsLoading } from '../../../store/slices/groupSlice';
 
 const TenantPropertyDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const dispatch = useAppDispatch();
   const { currentPropertyAd: ad } = useAppSelector((state) => state.propertyAd);
+  const availableGroups = useAppSelector(selectAvailableGroups);
+  const groupsLoading = useAppSelector(selectGroupIsLoading);
   const property = ad?.property as unknown as Property | null;
   const [showConfirm, setShowConfirm] = useState(false);
 
@@ -35,19 +39,27 @@ const TenantPropertyDetail: React.FC = () => {
       showLoadingSpinner('Loading property...');
       try {
         await dispatch(fetchPropertyAdById(parseInt(id, 10)));
+        const propId = parseInt(id, 10);
       } finally {
         stopLoadingSpinner();
       }
     };
     load();
   }, [dispatch, id]);
+
+  useEffect(() => {
+    if (property?.id) {
+      dispatch(fetchAvailableGroups(property.id));
+    }
+  }, [dispatch, property?.id]);
   return (
     <IonPage>
       <PageHeader title="Property Detail" showMenu={false} showBack={true} />
       <IonContent fullscreen>
         <IonImg
-          src={property?.property_image || "https://docs-demo.ionic.io/assets/madison.jpg"}
+          src={property?.property_image || "images/property_placeholder.jpg"}
           alt={property?.name || 'Property'}
+          style={{ objectPosition: 'center' }}
         ></IonImg>
 
         <div className='ion-align-self-start ion-padding-horizontal ion-padding-top'>
@@ -81,10 +93,29 @@ const TenantPropertyDetail: React.FC = () => {
             <IonLabel>Groups</IonLabel>
           </IonListHeader>
 
-          <GroupCard/>
-          <GroupCard/>
-          <GroupCard/>
-          <GroupCard/>
+          {groupsLoading ? (
+            Array.from({ length: 3 }).map((_, idx) => (
+              <IonItem key={idx}>
+                <IonNote className='ion-text-wrap' style={{ width: '100%' }}>
+                  Loading group...
+                </IonNote>
+              </IonItem>
+            ))
+          ) : (availableGroups || []).length === 0 ? (
+            <IonItem>
+              <IonLabel>No groups yet for this property</IonLabel>
+            </IonItem>
+          ) : (
+            availableGroups.map(group => (
+              <GroupCard
+                key={group.id}
+                name={group.name}
+                description={group.description}
+                memberCount={group.member_count ?? group.members?.length}
+                onView={() => {}}
+              />
+            ))
+          )}
         </IonList>
         
       </IonContent>

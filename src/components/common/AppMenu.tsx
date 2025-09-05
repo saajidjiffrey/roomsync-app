@@ -16,7 +16,6 @@ import {
 import {
   logOutOutline,
   personOutline,
-  settingsOutline,
   helpOutline,
   informationCircleOutline,
   peopleOutline,
@@ -105,14 +104,9 @@ const AppMenu: React.FC<AppMenuProps> = ({ menuId }) => {
               )}
             </>
           )}
-          <IonItem button>
+          <IonItem button onClick={() => history.push('/profile')}>
             <IonIcon slot="start" icon={personOutline} />
             <IonLabel>Profile</IonLabel>
-          </IonItem>
-
-          <IonItem button>
-            <IonIcon slot="start" icon={settingsOutline} />
-            <IonLabel>Settings</IonLabel>
           </IonItem>
 
           <IonItem button>

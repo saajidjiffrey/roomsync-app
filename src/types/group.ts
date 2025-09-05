@@ -1,3 +1,16 @@
+export interface GroupMember {
+  id: number;
+  user_id: number;
+  group_id: number;
+  property_id: number;
+  tenantUser?: {
+    id: number;
+    full_name: string;
+    email: string;
+    phone_no?: string;
+  };
+}
+
 export interface Group {
   id: number;
   name: string;
@@ -10,6 +23,7 @@ export interface Group {
   member_count?: number;
   max_members?: number;
   is_joined?: boolean;
+  members?: GroupMember[];
   created_by_user?: {
     id: number;
     full_name: string;

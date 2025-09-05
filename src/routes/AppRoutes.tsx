@@ -18,6 +18,7 @@ import UnauthorizedPage from '../pages/UnauthorizedPage';
 import OwnerLayout from '../components/layouts/OwnerLayout';
 import TenantLayout from '../components/layouts/TenantLayout';
 import AdminLayout from '../components/layouts/AdminLayout';
+import ProfilePage from '../pages/profile/Profile.page';
 
 // Protected Route component
 import ProtectedRoute from '../components/common/ProtectedRoute';
@@ -61,6 +62,7 @@ const AppRoutes: React.FC = () => {
         <Route exact path="/landing" component={LandingPage} />
         <Route exact path="/login" component={LoginPage} />
         <Route exact path="/signup" component={SignupPage} />
+        <Route exact path="/profile" component={ProfilePage} />
         <Route exact path="/unauthorized" component={UnauthorizedPage} />
         {/* <Route exact path="/test" component={TestPage} /> */}
         

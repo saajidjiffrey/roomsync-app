@@ -1,6 +1,6 @@
 import React from 'react';
 import { IonIcon, IonLabel, IonTabBar, IonTabButton, IonTabs, IonRouterOutlet } from '@ionic/react';
-import { search, document } from 'ionicons/icons';
+import { search, document, home } from 'ionicons/icons';
 import { Route, Redirect } from 'react-router-dom';
 import { 
   FindPropertyPage, 
@@ -44,7 +44,7 @@ const TenantLayout: React.FC = () => {
         
         <IonTabBar slot="bottom">
           <IonTabButton tab="home" href="/tenant/home">
-            <IonIcon aria-hidden="true" icon={search} />
+            <IonIcon aria-hidden="true" icon={home} />
             <IonLabel>Home</IonLabel>
           </IonTabButton>
           <IonTabButton tab="expenses" href="/tenant/expenses">

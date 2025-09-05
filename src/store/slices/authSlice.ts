@@ -4,6 +4,16 @@ import { ApiError } from '../../types/api';
 import { User, LoginRequest, RegisterRequest, PasswordUpdateRequest, AuthState } from '../../types/user';
 import toastService from '../../services/toast';
 
+// Helper to extract detailed API error messages (including field errors)
+const extractErrorMessage = (error: unknown, fallbackMessage: string): string => {
+  const apiError = error as ApiError;
+  if (apiError.response?.data?.errors && Array.isArray(apiError.response.data.errors) && apiError.response.data.errors.length > 0) {
+    const fieldErrors = apiError.response.data.errors.map((err: { message?: string }) => err.message).filter(Boolean).join(', ');
+    return fieldErrors || (apiError.response?.data?.message || fallbackMessage);
+  }
+  return apiError.response?.data?.message || apiError.message || fallbackMessage;
+};
+
 
 // Initial state
 const initialState: AuthState = {
@@ -150,13 +160,37 @@ export const updatePassword = createAsyncThunk(
     try {
       const response = await authAPI.updatePassword(passwordData);
       if (response.success && response.data) {
+        toastService.success('Password updated successfully');
         return response.data;
       } else {
-        return rejectWithValue(response.message || 'Password update failed');
+        const message = response.errors && Array.isArray(response.errors) && response.errors.length > 0
+          ? response.errors.map((e: { message?: string }) => e.message).filter(Boolean).join(', ')
+          : (response.message || 'Password update failed');
+        return rejectWithValue(message);
       }
     } catch (error: unknown) {
-      const apiError = error as ApiError;
-      return rejectWithValue(apiError.response?.data?.message || apiError.message || 'Password update failed');
+      return rejectWithValue(extractErrorMessage(error, 'Password update failed'));
+    }
+  }
+);
+
+// Update profile
+export const updateProfile = createAsyncThunk(
+  'auth/updateProfile',
+  async (profileData: Partial<User>, { rejectWithValue }) => {
+    try {
+      const response = await authAPI.updateProfile(profileData);
+      if (response.success && response.data) {
+        toastService.success('Profile updated successfully');
+        return response.data;
+      } else {
+        const message = response.errors && Array.isArray(response.errors) && response.errors.length > 0
+          ? response.errors.map((e: { message?: string }) => e.message).filter(Boolean).join(', ')
+          : (response.message || 'Profile update failed');
+        return rejectWithValue(message);
+      }
+    } catch (error: unknown) {
+      return rejectWithValue(extractErrorMessage(error, 'Profile update failed'));
     }
   }
 );
@@ -209,7 +243,7 @@ const authSlice = createSlice({
     },
     
     // Refresh user profile from server
-    refreshUserProfile: (state) => {
+    refreshUserProfile: () => {
       // This will be handled by the getProfile thunk
     },
   },
@@ -274,8 +308,19 @@ const authSlice = createSlice({
       .addCase(getProfile.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
-        // Show error toast
-        toastService.error(action.payload as string);
+        
+        // If it's a 401 error, clear the auth state (token expired/invalid)
+        const errorMessage = action.payload as string;
+        if (errorMessage.includes('401') || errorMessage.includes('Unauthorized')) {
+          state.token = null;
+          state.isAuthenticated = false;
+          state.user = null;
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+        } else {
+          // Show error toast for other errors
+          toastService.error(errorMessage);
+        }
       });
 
     // Update Password
@@ -293,6 +338,24 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload as string;
         // Show error toast
+        toastService.error(action.payload as string);
+      });
+
+    // Update Profile
+    builder
+      .addCase(updateProfile.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(updateProfile.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.user = action.payload;
+        state.error = null;
+        localStorage.setItem('user', JSON.stringify(action.payload));
+      })
+      .addCase(updateProfile.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
         toastService.error(action.payload as string);
       });
 

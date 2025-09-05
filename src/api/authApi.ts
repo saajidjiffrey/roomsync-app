@@ -22,6 +22,12 @@ export const authAPI = {
     return response;
   },
 
+  // Update user profile
+  updateProfile: async (data: Partial<User>): Promise<ApiResponse<User>> => {
+    const response = await apiService.put<User>('/auth/profile', data);
+    return response;
+  },
+
   // Update password
   updatePassword: async (data: PasswordUpdateRequest): Promise<ApiResponse<User>> => {
     const response = await apiService.put<User>('/auth/password', data);

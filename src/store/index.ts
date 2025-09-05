@@ -8,6 +8,8 @@ import propertyReducer from './slices/propertySlice'
 import propertyAdReducer from './slices/propertyAdSlice'
 import joinRequestReducer from './slices/propertyJoinRequestSlice'
 import groupReducer from './slices/groupSlice'
+import expenseReducer from './slices/expenseSlice'
+import splitReducer from './slices/splitSlice'
 import spinnerReducer from './slices/spinnerSlice'
 import { errorToastMiddleware } from './middleware/errorToastMiddleware'
 
@@ -18,6 +20,8 @@ const rootReducer = combineReducers({
   propertyAd: propertyAdReducer,
   joinRequest: joinRequestReducer,
   group: groupReducer,
+  expense: expenseReducer,
+  split: splitReducer,
   spinner: spinnerReducer,
 })
 

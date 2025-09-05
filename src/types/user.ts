@@ -16,14 +16,14 @@ export interface User {
     user_id: number;
     property_id?: number | null;
     group_id?: number | null;
-    createdAt?: string;
-    updatedAt?: string;
+    created_at?: string;
+    updated_at?: string;
   };
   owner_profile?: {
     id: number;
     user_id: number;
-    createdAt?: string;
-    updatedAt?: string;
+    created_at?: string;
+    updated_at?: string;
   };
 }
 

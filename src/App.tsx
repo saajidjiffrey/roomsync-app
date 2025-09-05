@@ -52,8 +52,12 @@ const AuthInitializer: React.FC = () => {
   useEffect(() => {
     const initializeApp = async () => {
       dispatch(initializeAuth());
-      // Fetch the latest user profile after initializing auth
-      await dispatch(getProfile());
+      
+      // Only fetch profile if there's a token in localStorage
+      const token = localStorage.getItem('token');
+      if (token) {
+        await dispatch(getProfile());
+      }
     };
     initializeApp();
   }, [dispatch]);

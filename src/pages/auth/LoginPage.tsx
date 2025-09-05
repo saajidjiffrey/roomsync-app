@@ -1,4 +1,4 @@
-import { IonButton, IonContent, IonFooter, IonHeader, IonInput, IonItem, IonList, IonPage, IonTitle, IonToolbar, IonText, IonInputPasswordToggle } from '@ionic/react';
+import { IonButton, IonContent, IonFooter, IonHeader, IonInput, IonItem, IonList, IonPage, IonTitle, IonToolbar, IonText, IonInputPasswordToggle, IonActionSheet } from '@ionic/react';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { useHistory } from 'react-router';
@@ -13,6 +13,7 @@ const LoginPage: React.FC = () => {
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
   
   const { login, isLoading, error, clearError, isAuthenticated, user } = useAuth();
+  const [showForgot, setShowForgot] = useState(false);
   const history = useHistory();
 
   // Redirect if already authenticated
@@ -140,6 +141,9 @@ const LoginPage: React.FC = () => {
             </IonText>
             <IonButton fill="clear" size="small" routerLink="/signup">Sign up</IonButton>
           </div>
+          <div className='ion-text-center'>
+            <IonButton fill="clear" size="small" onClick={() => setShowForgot(true)}>Forgot password?</IonButton>
+          </div>
         </form>
       </IonContent>
       <IonFooter className='ion-padding ion-no-border'>
@@ -154,6 +158,22 @@ const LoginPage: React.FC = () => {
           Login
         </IonButton>
       </IonFooter>
+      <IonActionSheet
+        isOpen={showForgot}
+        onDidDismiss={() => setShowForgot(false)}
+        header="Forgot password"
+        buttons={[
+          {
+            text: 'Send reset link',
+            role: 'confirm',
+            handler: async () => {
+              // Placeholder: wire backend flow if available later
+              toastService.success('If this were enabled, a reset link would be sent.');
+            },
+          },
+          { text: 'Cancel', role: 'cancel' },
+        ]}
+      />
     </IonPage>
   );
 };
