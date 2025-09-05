@@ -6,15 +6,16 @@ type GroupCardProps = {
   name?: string;
   description?: string;
   memberCount?: number;
+  groupImageUrl?: string;
   onView?: () => void;
 };
 
-const GroupCard: React.FC<GroupCardProps> = ({ name = 'Group Name', description, memberCount, onView }) => {
+const GroupCard: React.FC<GroupCardProps> = ({ name = 'Group Name', description, memberCount, groupImageUrl, onView }) => {
   return (
     <IonItemSliding>
       <IonItem button={true} detail={true}>
         <IonAvatar aria-hidden="true" slot="start" className='group-avatar ion-align-self-start avatar-square'>
-          <img alt="" src={"/images/group_placeholder.jpg"} />
+          <img alt="" src={groupImageUrl || "/images/group_placeholder.jpg"} />
         </IonAvatar>
         <IonLabel className='ion-align-self-start'>
           <strong>{name}</strong>

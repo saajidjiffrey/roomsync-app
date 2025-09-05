@@ -40,7 +40,7 @@ const GroupDetail: React.FC = () => {
       <PageHeader title="Group Detail" showMenu={false} showBack={true} />
       <IonContent fullscreen>
         <IonImg
-          src="/images/group_placeholder.jpg"
+          src={currentGroup?.group_image_url || "/images/group_placeholder.jpg"}
           alt="Group cover"
           style={{ objectPosition: 'center' }}
         ></IonImg>

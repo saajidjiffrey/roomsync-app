@@ -20,6 +20,8 @@ import { cameraOutline } from 'ionicons/icons';
 import { useAuth } from '../hooks/useAuth';
 import { useAppDispatch } from '../store/hooks';
 import { createGroup } from '../store/slices/groupSlice';
+import { useIonActionSheet, useIonToast } from '@ionic/react';
+import { pickAndUpload } from '../services/imageService';
 
 const CreateGroup = ({ dismiss }: { dismiss: (data?: string | null | undefined | number, role?: string) => void }) => {
   const nameRef = useRef<HTMLIonInputElement>(null);
@@ -27,6 +29,9 @@ const CreateGroup = ({ dismiss }: { dismiss: (data?: string | null | undefined |
   const { user, refreshUserProfile } = useAuth();
   const dispatch = useAppDispatch();
   const [isCreating, setIsCreating] = useState(false);
+  const [imageUrl, setImageUrl] = useState<string | undefined>(undefined);
+  const [presentActionSheet] = useIonActionSheet();
+  const [presentToast] = useIonToast();
 
   const propertyId = user?.tenant_profile?.property_id;
   return (
@@ -60,7 +65,8 @@ const CreateGroup = ({ dismiss }: { dismiss: (data?: string | null | undefined |
                   await dispatch(createGroup({
                     name: groupName.toString(),
                     description: groupDescription?.toString(),
-                    property_id: propertyId
+                    property_id: propertyId,
+                    group_image_url: imageUrl
                   }));
                   
                   // Refresh user profile to get updated group_id
@@ -83,9 +89,9 @@ const CreateGroup = ({ dismiss }: { dismiss: (data?: string | null | undefined |
       <IonContent className="ion-padding">
         <div style={{ position: 'relative' }}>
           <IonImg
-            src={'https://placehold.co/400'}
+            src={imageUrl ||"/images/group_placeholder.jpg"}
             alt="Property Image"
-            style={{ height: '200px', objectFit: 'cover' }}
+            style={{objectPosition: 'center'}}
           />
           <IonButton
             fill="solid"
@@ -99,6 +105,36 @@ const CreateGroup = ({ dismiss }: { dismiss: (data?: string | null | undefined |
               '--border-radius': '50%',
               width: '40px',
               height: '40px'
+            }}
+            onClick={async () => {
+              presentActionSheet({
+                header: 'Select Image Source',
+                buttons: [
+                  {
+                    text: 'Camera',
+                    handler: async () => {
+                      try {
+                        const url = await pickAndUpload({ source: 'camera', pathPrefix: 'groups' });
+                        setImageUrl(url);
+                      } catch {
+                        presentToast({ message: 'Failed to pick image', duration: 2000, color: 'danger' });
+                      }
+                    }
+                  },
+                  {
+                    text: 'Gallery',
+                    handler: async () => {
+                      try {
+                        const url = await pickAndUpload({ source: 'gallery', pathPrefix: 'groups' });
+                        setImageUrl(url);
+                      } catch {
+                        presentToast({ message: 'Failed to pick image', duration: 2000, color: 'danger' });
+                      }
+                    }
+                  },
+                  { text: 'Cancel', role: 'cancel' }
+                ]
+              });
             }}
           >
             <IonIcon icon={cameraOutline} />

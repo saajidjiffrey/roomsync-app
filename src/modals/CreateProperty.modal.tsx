@@ -21,6 +21,8 @@ import { addOutline, cameraOutline, closeOutline } from 'ionicons/icons';
 import { useAppDispatch } from '../store/hooks';
 import { createProperty } from '../store/slices/propertySlice';
 import { showLoadingSpinner, stopLoadingSpinner } from '../utils/spinnerUtils';
+import { pickAndUpload } from '../services/imageService';
+import { useIonActionSheet, useIonToast } from '@ionic/react';
 
 interface FormErrors {
   name?: string;
@@ -49,6 +51,39 @@ const CreatePropertyModal = ({ dismiss }: { dismiss: (data?: string | null | und
     tags: [] as string[]
   });
   const [newTag, setNewTag] = useState('');
+  const [presentActionSheet] = useIonActionSheet();
+  const [presentToast] = useIonToast();
+
+  const handlePickImage = async () => {
+    presentActionSheet({
+      header: 'Select Image Source',
+      buttons: [
+        {
+          text: 'Camera',
+          handler: async () => {
+            try {
+              const url = await pickAndUpload({ source: 'camera', pathPrefix: 'properties' });
+              setFormData(prev => ({ ...prev, property_image: url }));
+            } catch {
+              presentToast({ message: 'Failed to pick image', duration: 2000, color: 'danger' });
+            }
+          }
+        },
+        {
+          text: 'Gallery',
+          handler: async () => {
+            try {
+              const url = await pickAndUpload({ source: 'gallery', pathPrefix: 'properties' });
+              setFormData(prev => ({ ...prev, property_image: url }));
+            } catch {
+              presentToast({ message: 'Failed to pick image', duration: 2000, color: 'danger' });
+            }
+          }
+        },
+        { text: 'Cancel', role: 'cancel' }
+      ]
+    });
+  };
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -170,7 +205,7 @@ const CreatePropertyModal = ({ dismiss }: { dismiss: (data?: string | null | und
       <IonContent className="ion-padding">
         <div style={{ position: 'relative' }}>
           <IonImg
-            src={"/images/property_placeholder.jpg"}
+            src={formData.property_image || "/images/property_placeholder.jpg"}
             alt="Property Image"
             style={{ height: '200px', objectFit: 'cover' }}
           />
@@ -187,6 +222,7 @@ const CreatePropertyModal = ({ dismiss }: { dismiss: (data?: string | null | und
               width: '40px',
               height: '40px'
             }}
+            onClick={handlePickImage}
           >
             <IonIcon icon={cameraOutline} />
           </IonButton>

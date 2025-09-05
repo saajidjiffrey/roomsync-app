@@ -39,7 +39,6 @@ const TenantPropertyDetail: React.FC = () => {
       showLoadingSpinner('Loading property...');
       try {
         await dispatch(fetchPropertyAdById(parseInt(id, 10)));
-        const propId = parseInt(id, 10);
       } finally {
         stopLoadingSpinner();
       }
@@ -112,6 +111,7 @@ const TenantPropertyDetail: React.FC = () => {
                 name={group.name}
                 description={group.description}
                 memberCount={group.member_count ?? group.members?.length}
+                groupImageUrl={group.group_image_url}
                 onView={() => {}}
               />
             ))

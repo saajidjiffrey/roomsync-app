@@ -66,7 +66,7 @@ const AppMenu: React.FC<AppMenuProps> = ({ menuId }) => {
         <div style={{ padding: '16px', textAlign: 'center' }}>
           <IonAvatar style={{ width: '80px', height: '80px', margin: '0 auto 8px' }}>
             <img
-              src={"/images/user_placeholder.jpg"}
+              src={user?.profile_url ?? "/images/user_placeholder.jpg"}
               alt="User avatar"
             />
           </IonAvatar>

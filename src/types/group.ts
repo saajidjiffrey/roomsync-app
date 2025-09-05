@@ -19,6 +19,7 @@ export interface Group {
   created_by: number;
   created_at: string;
   updated_at: string;
+  group_image_url?: string;
   // Additional fields that might be populated by API
   member_count?: number;
   max_members?: number;
@@ -39,6 +40,7 @@ export interface CreateGroupRequest {
   name: string;
   description?: string;
   property_id: number;
+  group_image_url?: string;
 }
 
 export interface JoinGroupRequest {

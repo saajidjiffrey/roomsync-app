@@ -21,6 +21,10 @@ import PageHeader from '../../components/common/PageHeader';
 import { useAuth } from '../../hooks/useAuth';
 import { useAppDispatch } from '../../store/hooks';
 import { updateProfile, updatePassword, getProfile } from '../../store/slices/authSlice';
+import { pickAndUpload } from '../../services/imageService';
+import { cameraOutline } from 'ionicons/icons';
+import { IonIcon } from '@ionic/react';
+import { useIonActionSheet, useIonToast } from '@ionic/react';
 
 interface FormErrors {
   full_name?: string;
@@ -42,6 +46,8 @@ const ProfilePage: React.FC = () => {
   const [showChangePwd, setShowChangePwd] = useState(false);
   const [pwdForm, setPwdForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
   const [pwdErrors, setPwdErrors] = useState<{ currentPassword?: string; newPassword?: string; confirmPassword?: string }>({});
+  const [presentActionSheet] = useIonActionSheet();
+  const [presentToast] = useIonToast();
 
   useEffect(() => {
     setFormData({
@@ -96,11 +102,61 @@ const ProfilePage: React.FC = () => {
     <IonPage>
       <PageHeader title="Profile" showMenu={false} showBack={true} />
       <IonContent fullscreen>
-        <IonImg
-          src={"/images/user_placeholder.jpg"}
-          alt="Profile cover"
-          style={{ objectPosition: 'center' }}
-        ></IonImg>
+        <div style={{ position: 'relative' }}>
+          <IonImg
+            src={user?.profile_url || "/images/user_placeholder.jpg"}
+            alt="Profile cover"
+            style={{ objectPosition: 'center' }}
+          ></IonImg>
+          <IonButton
+            fill="solid"
+            size="small"
+            style={{
+              position: 'absolute',
+              bottom: '10px',
+              right: '10px',
+              '--background': '#3880ff',
+              '--color': 'white',
+              '--border-radius': '50%',
+              width: '40px',
+              height: '40px'
+            }}
+            onClick={() =>
+              presentActionSheet({
+                header: 'Select Image Source',
+                buttons: [
+                  {
+                    text: 'Camera',
+                    handler: async () => {
+                      try {
+                        const url = await pickAndUpload({ source: 'camera', pathPrefix: 'profiles' });
+                        await dispatch(updateProfile({ profile_url: url }));
+                        await dispatch(getProfile());
+                      } catch {
+                        presentToast({ message: 'Failed to pick image', duration: 2000, color: 'danger' });
+                      }
+                    }
+                  },
+                  {
+                    text: 'Gallery',
+                    handler: async () => {
+                      try {
+                        const url = await pickAndUpload({ source: 'gallery', pathPrefix: 'profiles' });
+                        await dispatch(updateProfile({ profile_url: url }));
+                        await dispatch(getProfile());
+                      } catch {
+                        presentToast({ message: 'Failed to pick image', duration: 2000, color: 'danger' });
+                      }
+                    }
+                  },
+                  { text: 'Cancel', role: 'cancel' }
+                ]
+              })
+            }
+          >
+            <IonIcon icon={cameraOutline} />
+          </IonButton>
+        </div>
 
         <div className='ion-align-self-start ion-padding-horizontal ion-margin-top'>
           <IonText>

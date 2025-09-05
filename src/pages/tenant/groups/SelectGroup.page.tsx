@@ -89,7 +89,7 @@ const SelectGroup = () => {
             {availableGroups.map((group) => (
               <IonItem key={group.id} button detail={false}>
                 <IonAvatar aria-hidden="true" slot="start" className='group-avatar ion-align-self-start avatar-square'>
-                  <img alt="" src={"/images/group_placeholder.jpg"} />
+                  <img alt="" src={group.group_image_url || "/images/group_placeholder.jpg"} />
                 </IonAvatar>
                 <IonLabel className='ion-align-self-start'>
                   <strong>{group.name}</strong>
