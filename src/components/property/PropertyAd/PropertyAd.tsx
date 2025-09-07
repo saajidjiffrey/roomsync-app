@@ -18,13 +18,13 @@ const PropertyAd: React.FC<Props> = ({ ad }) => {
       </IonItemOptions>
       <IonItem button={true} detail={true} routerLink={detailsPath} routerDirection='forward'>
         <IonAvatar aria-hidden="true" slot="start" className='property-avatar ion-align-self-start avatar-square'>
-          <img alt="" src={ad.property?.property_image ||"/images/ad_placeholder.jpg"} />
+          <img alt="" src={ad.Property?.property_image ||"/images/ad_placeholder.jpg"} />
         </IonAvatar>
         <IonLabel className='ion-align-self-start'>
-          <strong>{ad.property?.name ?? `Property #${ad.property_id}`}</strong>
-          {ad.property?.address && (
+          <strong>{ad.Property?.name ?? `Property #${ad.property_id}`}</strong>
+          {ad.Property?.address && (
             <IonNote color="medium" className="ion-text-wrap">
-              {ad.property.address}
+              {ad.Property.address}
             </IonNote>
           )}
           <br />

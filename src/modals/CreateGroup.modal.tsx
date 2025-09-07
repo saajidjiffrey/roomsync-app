@@ -22,12 +22,14 @@ import { useAppDispatch } from '../store/hooks';
 import { createGroup } from '../store/slices/groupSlice';
 import { useIonActionSheet, useIonToast } from '@ionic/react';
 import { pickAndUpload } from '../services/imageService';
+import { useHistory } from 'react-router-dom';
 
 const CreateGroup = ({ dismiss }: { dismiss: (data?: string | null | undefined | number, role?: string) => void }) => {
   const nameRef = useRef<HTMLIonInputElement>(null);
   const descriptionRef = useRef<HTMLIonTextareaElement>(null);
   const { user, refreshUserProfile } = useAuth();
   const dispatch = useAppDispatch();
+  const history = useHistory();
   const [isCreating, setIsCreating] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | undefined>(undefined);
   const [presentActionSheet] = useIonActionSheet();
@@ -62,16 +64,21 @@ const CreateGroup = ({ dismiss }: { dismiss: (data?: string | null | undefined |
 
                 setIsCreating(true);
                 try {
-                  await dispatch(createGroup({
+                  const result = await dispatch(createGroup({
                     name: groupName.toString(),
                     description: groupDescription?.toString(),
                     property_id: propertyId,
                     group_image_url: imageUrl
                   }));
                   
-                  // Refresh user profile to get updated group_id
-                  await refreshUserProfile();
-                  dismiss(groupName, 'confirm');
+                  if (createGroup.fulfilled.match(result)) {
+                    // Fetch updated profile to get new group_id
+                    await refreshUserProfile();
+                    
+                    // Dismiss modal and redirect to home
+                    dismiss(groupName, 'confirm');
+                    history.push('/tenant/home');
+                  }
                 } catch (error) {
                   console.error('Failed to create group:', error);
                 } finally {

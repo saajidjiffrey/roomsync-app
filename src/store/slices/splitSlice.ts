@@ -78,6 +78,22 @@ export const fetchSplitSummary = createAsyncThunk(
   }
 );
 
+export const fetchSplitsByExpense = createAsyncThunk(
+  'split/fetchSplitsByExpense',
+  async (expenseId: number, { rejectWithValue }) => {
+    try {
+      const response = await splitApi.getSplitsByExpense(expenseId);
+      if (response.success && response.data) {
+        return Array.isArray(response.data) ? response.data : [response.data];
+      } else {
+        return rejectWithValue(response.message || 'Failed to fetch splits by expense');
+      }
+    } catch (error: unknown) {
+      return rejectWithValue(extractErrorMessage(error, 'Failed to fetch splits by expense'));
+    }
+  }
+);
+
 export const updateSplitStatus = createAsyncThunk(
   'split/updateSplitStatus',
   async ({ splitId, status }: { splitId: number; status: 'unpaid' | 'pending' | 'paid' }, { rejectWithValue }) => {
@@ -99,6 +115,7 @@ const initialState: SplitState = {
   toPaySplits: [],
   toReceiveSplits: [],
   historySplits: [],
+  splitsByExpense: [],
   summary: null,
   isLoading: false,
   error: null,
@@ -181,6 +198,21 @@ const splitSlice = createSlice({
         state.isLoading = true;
         state.error = null;
       })
+      // Fetch splits by expense
+      .addCase(fetchSplitsByExpense.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchSplitsByExpense.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.splitsByExpense = action.payload;
+        state.error = null;
+      })
+      .addCase(fetchSplitsByExpense.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+        toastService.error(action.payload as string);
+      })
       .addCase(updateSplitStatus.fulfilled, (state, action) => {
         state.isLoading = false;
         const { splitId, status } = action.payload;
@@ -212,6 +244,7 @@ export const selectSplitState = (state: RootState) => state.split;
 export const selectToPaySplits = (state: RootState) => state.split.toPaySplits;
 export const selectToReceiveSplits = (state: RootState) => state.split.toReceiveSplits;
 export const selectHistorySplits = (state: RootState) => state.split.historySplits;
+export const selectSplitsByExpense = (state: RootState) => state.split.splitsByExpense;
 export const selectSplitSummary = (state: RootState) => state.split.summary;
 export const selectSplitIsLoading = (state: RootState) => state.split.isLoading;
 export const selectSplitError = (state: RootState) => state.split.error;

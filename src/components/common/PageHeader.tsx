@@ -14,9 +14,10 @@ interface PageHeaderProps {
   showMenu?: boolean;
   showBack?: boolean;
   defaultHref?: string;
+  rightContent?: React.ReactNode;
 }
 
-const PageHeader: React.FC<PageHeaderProps> = ({ title, showMenu = true, showBack = false, defaultHref = '/' }) => {
+const PageHeader: React.FC<PageHeaderProps> = ({ title, showMenu = true, showBack = false, defaultHref = '/', rightContent }) => {
   return (
     <IonHeader>
       <IonToolbar>
@@ -31,6 +32,11 @@ const PageHeader: React.FC<PageHeaderProps> = ({ title, showMenu = true, showBac
           </IonButtons>
         )}
         <IonTitle>{title}</IonTitle>
+        {rightContent && (
+          <IonButtons slot="end">
+            {rightContent}
+          </IonButtons>
+        )}
       </IonToolbar>
     </IonHeader>
   );

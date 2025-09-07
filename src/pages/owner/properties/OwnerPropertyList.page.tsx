@@ -9,7 +9,9 @@ import {
   IonTitle,
   IonToolbar,
   useIonModal,
-  IonText
+  IonText,
+  IonRefresher,
+  IonRefresherContent
 } from '@ionic/react';
 import { PropertyCard } from '../../../components/property/PropertyCard';
 import { add } from 'ionicons/icons';
@@ -40,6 +42,14 @@ const OwnerPropertyPage: React.FC = () => {
   const [present, dismiss] = useIonModal(CreatePropertyModal, {
     dismiss: (data: string, role: string) => dismiss(data, role),
   });
+
+  const handleRefresh = async (event: CustomEvent) => {
+    try {
+      await dispatch(fetchMyProperties());
+    } finally {
+      event.detail.complete();
+    }
+  };
 
   function openModal() {
     present({
@@ -77,6 +87,9 @@ const OwnerPropertyPage: React.FC = () => {
     <IonPage>
         <PageHeader title="My Properties" />
         <IonContent fullscreen>
+          <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
+            <IonRefresherContent></IonRefresherContent>
+          </IonRefresher>
           <IonHeader collapse="condense">
             <IonToolbar>
               <IonTitle size="large">My Properties</IonTitle>

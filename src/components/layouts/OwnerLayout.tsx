@@ -11,6 +11,7 @@ import { home, newspaper, people } from 'ionicons/icons';
 import { Route, Redirect } from 'react-router-dom';
 import { OwnerPropertyListPage, OwnerAdsListPage, OwnerRequestListPage } from '../../pages/owner';
 import PropertyDetailPage from '../../pages/property/PropertyDetail.page';
+import GroupDetailPage from '../../pages/tenant/groups/GroupDetail.page';
 import AppMenu from '../common/AppMenu';
 
 const OwnerLayout: React.FC = () => {
@@ -26,6 +27,7 @@ const OwnerLayout: React.FC = () => {
           
           {/* Additional owner routes */}
           <Route path="/owner/property-details/:id" component={PropertyDetailPage} />
+          <Route path="/owner/group-detail/:groupId" component={GroupDetailPage} />
           
           {/* Default redirect */}
           <Route exact path="/owner">

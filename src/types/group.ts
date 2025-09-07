@@ -3,11 +3,12 @@ export interface GroupMember {
   user_id: number;
   group_id: number;
   property_id: number;
-  tenantUser?: {
+  User?: {
     id: number;
     full_name: string;
     email: string;
     phone_no?: string;
+    profile_url?: string;
   };
 }
 
@@ -30,7 +31,7 @@ export interface Group {
     full_name: string;
     email: string;
   };
-  property?: {
+  Property?: {
     id: number;
     name: string;
   };
@@ -50,6 +51,7 @@ export interface JoinGroupRequest {
 export interface GroupState {
   availableGroups: Group[];
   myGroups: Group[];
+  currentGroup: Group | null;
   isLoading: boolean;
   error: string | null;
 }

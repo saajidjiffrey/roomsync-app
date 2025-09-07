@@ -19,6 +19,7 @@ import {
 import { useAuth } from '../hooks/useAuth';
 import toastService from '../services/toast';
 import { authAPI } from '../api/authApi';
+import api from '../api/api';
 
 const TestPage: React.FC = () => {
   const { user, isAuthenticated, login, logout, isLoading } = useAuth();
@@ -64,6 +65,20 @@ const TestPage: React.FC = () => {
       await toastService.success(`API call successful! User: ${response.data?.full_name}`);
     } catch (error: unknown) {
       await toastService.showApiError(error as any);
+    }
+  };
+
+  const testNotification = async () => {
+    try {
+      const response = await api.post('/notifications/test-create');
+      
+      if (response.data.success) {
+        await toastService.success('Test notification sent!');
+      } else {
+        await toastService.error(response.data.message || 'Failed to send test notification');
+      }
+    } catch (error: unknown) {
+      await toastService.error('Failed to send test notification');
     }
   };
 
@@ -153,6 +168,17 @@ const TestPage: React.FC = () => {
             </IonButton>
             <IonButton expand="block" onClick={() => testToast('info')} color="primary">
               Info Toast
+            </IonButton>
+          </IonCardContent>
+        </IonCard>
+
+        <IonCard>
+          <IonCardHeader>
+            <IonCardTitle>Notification Test</IonCardTitle>
+          </IonCardHeader>
+          <IonCardContent>
+            <IonButton expand="block" onClick={testNotification} color="secondary">
+              Test Notification
             </IonButton>
           </IonCardContent>
         </IonCard>

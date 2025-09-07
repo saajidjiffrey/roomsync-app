@@ -1,7 +1,6 @@
 import { useSelector } from 'react-redux';
 import { useAppDispatch } from '../store/hooks';
 import {
-  selectAuth,
   selectUser,
   selectIsAuthenticated,
   selectIsLoading,
@@ -13,13 +12,11 @@ import {
   getProfile,
   updatePassword,
   clearError,
-  refreshUserProfile,
 } from '../store/slices/authSlice';
 import { LoginRequest, RegisterRequest, PasswordUpdateRequest } from '../types/user';
 
 export const useAuth = () => {
   const dispatch = useAppDispatch();
-  const auth = useSelector(selectAuth);
   const user = useSelector(selectUser);
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const isLoading = useSelector(selectIsLoading);

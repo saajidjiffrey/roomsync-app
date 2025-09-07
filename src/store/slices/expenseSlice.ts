@@ -99,6 +99,7 @@ export const deleteExpense = createAsyncThunk(
 
 const initialState: ExpenseState = {
   expenses: [],
+  currentExpense: null,
   isLoading: false,
   error: null,
 };
@@ -151,6 +152,7 @@ const expenseSlice = createSlice({
       })
       .addCase(fetchExpenseById.fulfilled, (state, action: PayloadAction<Expense>) => {
         state.isLoading = false;
+        state.currentExpense = action.payload;
         const index = state.expenses.findIndex(expense => expense.id === action.payload.id);
         if (index !== -1) {
           state.expenses[index] = action.payload;
@@ -202,6 +204,7 @@ export const { clearError, clearExpenses } = expenseSlice.actions;
 // Selectors
 export const selectExpenseState = (state: RootState) => state.expense;
 export const selectExpenses = (state: RootState) => state.expense.expenses;
+export const selectCurrentExpense = (state: RootState) => state.expense.currentExpense;
 export const selectExpenseIsLoading = (state: RootState) => state.expense.isLoading;
 export const selectExpenseError = (state: RootState) => state.expense.error;
 

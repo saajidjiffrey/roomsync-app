@@ -19,7 +19,9 @@ import {
   IonItem,
   IonAvatar,
   IonChip,
-  IonSkeletonText
+  IonSkeletonText,
+  IonRefresher,
+  IonRefresherContent
 } from '@ionic/react';
 import { add } from 'ionicons/icons';
 import CreateExpenseModal from '../../../modals/CreateExpense.modal';
@@ -39,6 +41,7 @@ import {
   selectSplitSummary,
   selectSplitIsLoading
 } from '../../../store/slices/splitSlice';
+import { formatAmount } from '../../../utils';
 import { updateSplitStatus } from '../../../store/slices/splitSlice';
 
 const Expenses: React.FC = () => {
@@ -60,10 +63,6 @@ const Expenses: React.FC = () => {
   const isLoading = useAppSelector(selectSplitIsLoading);
 
   // Helpers
-  const formatAmount = (value: unknown) => {
-    const num = parseFloat(String(value ?? '0'));
-    return num.toFixed(2);
-  };
 
   const tenantId = user?.tenant_profile?.id;
 
@@ -77,6 +76,21 @@ const Expenses: React.FC = () => {
     await dispatch(updateSplitStatus({ splitId, status: 'paid' }));
     dispatch(fetchToReceiveSplits());
     dispatch(fetchSplitSummary());
+  };
+
+  const handleRefresh = async (event: CustomEvent) => {
+    try {
+      if (groupId) {
+        await Promise.all([
+          dispatch(fetchToPaySplits()),
+          dispatch(fetchToReceiveSplits()),
+          dispatch(fetchSplitHistory()),
+          dispatch(fetchSplitSummary())
+        ]);
+      }
+    } finally {
+      event.detail.complete();
+    }
   };
 
   // Fetch split data when component mounts and user has a group
@@ -154,6 +168,9 @@ const Expenses: React.FC = () => {
     <IonPage>
       <PageHeader title="Expenses" />
       <IonContent fullscreen>
+        <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
+          <IonRefresherContent></IonRefresherContent>
+        </IonRefresher>
         {/* Split Summary Cards */}
         <div className="p-3">
           <div className="row g-2">
@@ -217,12 +234,12 @@ const Expenses: React.FC = () => {
                   toPaySplits.map((split) => (
                     <IonItem key={split.id} button>
                       <IonAvatar slot="start">
-                        <img src="/images/user_placeholder.jpg" alt="" />
+                        <img src={split.assignedByTenant?.User?.profile_url || "/images/user_placeholder.jpg"} alt="" />
                       </IonAvatar>
                       <IonLabel>
-                        <h2>{split.expense?.title}</h2>
-                        <p>To: {split.assignedByTenant?.tenantUser?.full_name}</p>
-                        <p>Category: {split.expense?.category}</p>
+                        <h2>{split.Expense?.title}</h2>
+                        <p>To: {split.assignedByTenant?.User?.full_name}</p>
+                        <p>Category: {split.Expense?.category}</p>
                       </IonLabel>
                       <IonChip color="warning" slot="end">
                         LKR {formatAmount(split.split_amount)}
@@ -261,12 +278,12 @@ const Expenses: React.FC = () => {
                   toReceiveSplits.map((split) => (
                     <IonItem key={split.id} button>
                       <IonAvatar slot="start">
-                        <img src="/images/user_placeholder.jpg" alt="" />
+                        <img src={split.assignedByTenant?.User?.profile_url || "/images/user_placeholder.jpg"} alt="" />
                       </IonAvatar>
                       <IonLabel>
-                        <h2>{split.expense?.title}</h2>
-                        <p>From: {split.assignedTenant?.tenantUser?.full_name}</p>
-                        <p>Category: {split.expense?.category}</p>
+                        <h2>{split.Expense?.title}</h2>
+                        <p>From: {split.assignedTenant?.User?.full_name}</p>
+                        <p>Category: {split.Expense?.category}</p>
                       </IonLabel>
                       <IonChip color="success" slot="end">
                         LKR {formatAmount(split.split_amount)}
@@ -305,19 +322,19 @@ const Expenses: React.FC = () => {
                   historySplits.map((split) => (
                     <IonItem key={split.id} button>
                       <IonAvatar slot="start">
-                        <img src="/images/user_placeholder.jpg" alt="" />
+                        <img src={split.assignedByTenant?.User?.profile_url || "/images/user_placeholder.jpg"} alt="" />
                       </IonAvatar>
                       <IonLabel>
-                        <h2>{split.expense?.title}</h2>
+                        <h2>{split.Expense?.title}</h2>
                         <p>
                           {split.assigned_to === split.assigned_by ? 
                             'Self payment' : 
                             split.assigned_by ? 
-                              `Paid to: ${split.assignedByTenant?.tenantUser?.full_name}` :
-                              `Received from: ${split.assignedTenant?.tenantUser?.full_name}`
+                              `Paid to: ${split.assignedByTenant?.User?.full_name}` :
+                              `Received from: ${split.assignedTenant?.User?.full_name}`
                           }
                         </p>
-                        <p>Category: {split.expense?.category}</p>
+                        <p>Category: {split.Expense?.category}</p>
                         <p>Paid: {split.paid_date ? new Date(split.paid_date).toLocaleDateString() : 'N/A'}</p>
                       </IonLabel>
                       {tenantId && split.assigned_to === tenantId ? (

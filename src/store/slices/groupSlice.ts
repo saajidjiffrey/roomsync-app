@@ -97,9 +97,28 @@ export const leaveGroup = createAsyncThunk(
   }
 );
 
+export const fetchGroupDetails = createAsyncThunk(
+  'group/fetchGroupDetails',
+  async (groupId: number, { rejectWithValue }) => {
+    try {
+      const response = await groupApi.getGroupDetails(groupId);
+      if (response.success && response.data) {
+        // Ensure we return a single Group object, not an array
+        const groupData = Array.isArray(response.data) ? response.data[0] : response.data;
+        return groupData;
+      } else {
+        return rejectWithValue(response.message || 'Failed to fetch group details');
+      }
+    } catch (error: unknown) {
+      return rejectWithValue(extractErrorMessage(error, 'Failed to fetch group details'));
+    }
+  }
+);
+
 const initialState: GroupState = {
   availableGroups: [],
   myGroups: [],
+  currentGroup: null,
   isLoading: false,
   error: null,
 };
@@ -204,6 +223,20 @@ const groupSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload as string;
         toastService.error(action.payload as string);
+      })
+      // Fetch Group Details
+      .addCase(fetchGroupDetails.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchGroupDetails.fulfilled, (state, action: PayloadAction<Group>) => {
+        state.isLoading = false;
+        state.currentGroup = action.payload;
+      })
+      .addCase(fetchGroupDetails.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+        toastService.error(action.payload as string);
       });
   },
 });
@@ -214,6 +247,7 @@ export const { clearError, clearGroups } = groupSlice.actions;
 export const selectGroupState = (state: RootState) => state.group;
 export const selectAvailableGroups = (state: RootState) => state.group.availableGroups;
 export const selectMyGroups = (state: RootState) => state.group.myGroups;
+export const selectCurrentGroup = (state: RootState) => state.group.currentGroup;
 export const selectGroupIsLoading = (state: RootState) => state.group.isLoading;
 export const selectGroupError = (state: RootState) => state.group.error;
 

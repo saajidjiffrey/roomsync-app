@@ -10,7 +10,7 @@ export interface PropertyAd {
   createdAt?: string;
   updatedAt?: string;
   // Optional expanded relation (when API includes it)
-  property?: {
+  Property?: {
     id: number;
     name: string;
     address: string;
@@ -23,10 +23,10 @@ export interface PropertyAd {
     updated_at?: string;
     createdAt?: string;
     updatedAt?: string;
-    propertyOwner?: {
+    Owner?: {
       id: number;
       user_id: number;
-      ownerUser?: {
+      User?: {
         id: number;
         full_name: string;
         email: string;

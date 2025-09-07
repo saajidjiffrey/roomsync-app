@@ -9,6 +9,8 @@ import { store, persistor } from './store';
 import { useEffect } from 'react';
 import { useAppDispatch } from './store/hooks';
 import { initializeAuth, getProfile } from './store/slices/authSlice';
+import { socketService } from './services/socketService';
+
 import ErrorBoundary from './components/common/ErrorBoundary';
 import LoadingSpinner from './components/common/LoadingSpinner';
 
@@ -57,10 +59,19 @@ const AuthInitializer: React.FC = () => {
       const token = localStorage.getItem('token');
       if (token) {
         await dispatch(getProfile());
+        // Initialize Socket.IO connection after successful authentication
+        socketService.initialize();
       }
     };
     initializeApp();
   }, [dispatch]);
+
+  // Cleanup Socket.IO connection on unmount
+  useEffect(() => {
+    return () => {
+      socketService.disconnect();
+    };
+  }, []);
 
   return null;
 };

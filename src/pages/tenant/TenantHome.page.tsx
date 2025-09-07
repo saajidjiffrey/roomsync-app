@@ -11,10 +11,11 @@ import {
   IonItem,
   IonAvatar,
   IonChip,
-  IonSkeletonText
+  IonSkeletonText,
+  IonRefresher,
+  IonRefresherContent
 } from '@ionic/react';
 import './TenantHome.css';
-import ExpenseCard from '../../components/expense/ExpenseCard';
 import { useAuth } from '../../hooks/useAuth';
 import { useHistory } from 'react-router-dom';
 import PageHeader from '../../components/common/PageHeader';
@@ -54,11 +55,24 @@ const TenantHome: React.FC = () => {
         const expenseDate = new Date(expense.created_at);
         return expenseDate.getMonth() === currentMonth && expenseDate.getFullYear() === currentYear;
       })
-      .reduce((total, expense) => total + parseFloat(expense.receipt_total || 0), 0);
+      .reduce((total, expense) => total + parseFloat(String(expense.receipt_total || 0)), 0);
   };
 
   // Get recent 10 expenses
   const recentExpenses = expenses.slice(0, 10);
+
+  const handleRefresh = async (event: CustomEvent) => {
+    try {
+      if (groupId) {
+        await Promise.all([
+          dispatch(fetchExpensesByGroup(groupId)),
+          dispatch(fetchSplitSummary())
+        ]);
+      }
+    } finally {
+      event.detail.complete();
+    }
+  };
 
   // If no property, show join property message
   if (!propertyId) {
@@ -114,6 +128,9 @@ const TenantHome: React.FC = () => {
       <PageHeader title="Home" />
 
       <IonContent fullscreen>
+        <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
+          <IonRefresherContent></IonRefresherContent>
+        </IonRefresher>
         {/* Group Information */}
         <div className="p-3">
           <div className="row g-2">
@@ -133,7 +150,7 @@ const TenantHome: React.FC = () => {
                 {splitLoading ? (
                   <IonSkeletonText animated style={{ width: '60%', height: '1.5rem' }} />
                 ) : (
-                  <h2 className="mb-0">LKR {parseFloat(splitSummary?.toReceive?.total || 0).toFixed(2)}</h2>
+                  <h2 className="mb-0">LKR {parseFloat(String(splitSummary?.toReceive?.total || 0)).toFixed(2)}</h2>
                 )}
               </div>
             </div>
@@ -143,7 +160,7 @@ const TenantHome: React.FC = () => {
                 {splitLoading ? (
                   <IonSkeletonText animated style={{ width: '60%', height: '1.5rem' }} />
                 ) : (
-                  <h2 className="mb-0">LKR {parseFloat(splitSummary?.toPay?.total || 0).toFixed(2)}</h2>
+                  <h2 className="mb-0">LKR {parseFloat(String(splitSummary?.toPay?.total || 0)).toFixed(2)}</h2>
                 )}
               </div>
             </div>
@@ -180,16 +197,16 @@ const TenantHome: React.FC = () => {
             ) : (
               recentExpenses.map((expense) => (
                 <IonItem key={expense.id} button>
-                  <IonAvatar slot="start">
+                  {/* <IonAvatar slot="start">
                     <img src="/images/user_placeholder.jpg" alt="" />
-                  </IonAvatar>
+                  </IonAvatar> */}
                   <IonLabel>
                     <h2>{expense.title}</h2>
                     <p>Category: {expense.category}</p>
                     <p>Date: {new Date(expense.created_at).toLocaleDateString()}</p>
                   </IonLabel>
                   <IonChip color="primary" slot="end">
-                    LKR {parseFloat(expense.receipt_total || 0).toFixed(2)}
+                    LKR {parseFloat(String(expense.receipt_total || 0)).toFixed(2)}
                   </IonChip>
                 </IonItem>
               ))

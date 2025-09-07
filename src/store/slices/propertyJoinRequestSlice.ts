@@ -167,3 +167,6 @@ export default joinRequestSlice.reducer;
 // Selectors
 export const selectOwnerActiveJoinRequests = (state: RootState) =>
   state.joinRequest.myRequests.filter((r) => r.status === 'pending');
+
+export const selectOwnerHistoryJoinRequests = (state: RootState) =>
+  state.joinRequest.myRequests.filter((r) => r.status === 'approved' || r.status === 'rejected');

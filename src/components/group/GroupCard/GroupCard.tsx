@@ -1,5 +1,6 @@
-import { IonAvatar, IonChip, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonLabel, IonText } from '@ionic/react';
+import { IonAvatar, IonChip, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonLabel, IonText, useIonRouter } from '@ionic/react';
 import React from 'react';
+import { useAuth } from '../../../hooks/useAuth';
 import './GroupCard.css';
 
 type GroupCardProps = {
@@ -7,13 +8,28 @@ type GroupCardProps = {
   description?: string;
   memberCount?: number;
   groupImageUrl?: string;
+  groupId?: number;
   onView?: () => void;
 };
 
-const GroupCard: React.FC<GroupCardProps> = ({ name = 'Group Name', description, memberCount, groupImageUrl, onView }) => {
+const GroupCard: React.FC<GroupCardProps> = ({ name = 'Group Name', description, memberCount, groupImageUrl, groupId, onView }) => {
+  const { userRole } = useAuth();
+  const router = useIonRouter();
+
+  const handleCardClick = () => {
+    if (groupId) {
+      // Navigate based on user role
+      if (userRole === 'owner') {
+        router.push('/owner/group-detail/' + groupId, 'forward');
+      } else if (userRole === 'tenant') {
+        router.push('/tenant/group-detail/' + groupId, 'forward');
+      }
+    }
+  };
+
   return (
     <IonItemSliding>
-      <IonItem button={true} detail={true}>
+      <IonItem button={true} detail={true} onClick={handleCardClick}>
         <IonAvatar aria-hidden="true" slot="start" className='group-avatar ion-align-self-start avatar-square'>
           <img alt="" src={groupImageUrl || "/images/group_placeholder.jpg"} />
         </IonAvatar>
@@ -24,10 +40,8 @@ const GroupCard: React.FC<GroupCardProps> = ({ name = 'Group Name', description,
             {description || 'No description provided.'}
             </p>
           </IonText>
-          <div>
-            <IonChip color="primary">{typeof memberCount === 'number' ? `${memberCount} Tenants` : 'Tenants'}</IonChip>
-          </div>
         </IonLabel>
+        <IonChip color="primary">{typeof memberCount === 'number' ? `${memberCount} Tenants` : 'Tenants'}</IonChip>
       </IonItem>
       <IonItemOptions side="end">
         <IonItemOption onClick={onView}>View</IonItemOption>

@@ -58,6 +58,23 @@ export const createProperty = createAsyncThunk(
   }
 );
 
+export const leaveProperty = createAsyncThunk(
+  'property/leaveProperty',
+  async (propertyId: number, { rejectWithValue }) => {
+    try {
+      const response = await propertyAPI.leaveProperty(propertyId);
+      if (response.success) {
+        toastService.success(response.message || 'Successfully left the property');
+        return propertyId;
+      } else {
+        return rejectWithValue(response.message || 'Failed to leave property');
+      }
+    } catch (error: unknown) {
+      return rejectWithValue(extractErrorMessage(error, 'Failed to leave property'));
+    }
+  }
+);
+
 // Initial state
 const initialState: PropertyState = {
   properties: [],
@@ -107,6 +124,22 @@ const propertySlice = createSlice({
         state.error = null;
       })
       .addCase(createProperty.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+        toastService.error(action.payload as string);
+      })
+      // Leave property (tenant)
+      .addCase(leaveProperty.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(leaveProperty.fulfilled, (state, action: PayloadAction<number>) => {
+        state.isLoading = false;
+        // Remove the property from the list if it exists
+        state.properties = state.properties.filter(property => property.id !== action.payload);
+        state.error = null;
+      })
+      .addCase(leaveProperty.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
         toastService.error(action.payload as string);

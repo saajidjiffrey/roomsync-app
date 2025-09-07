@@ -8,7 +8,9 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
-  useIonModal
+  useIonModal,
+  IonRefresher,
+  IonRefresherContent
 } from '@ionic/react';
 import { add } from 'ionicons/icons';
 import { useEffect } from 'react';
@@ -30,6 +32,14 @@ const OwnerAdsPage: React.FC = () => {
     dismiss: (data: string, role: string) => dismiss(data, role),
   });
 
+  const handleRefresh = async (event: CustomEvent) => {
+    try {
+      await dispatch(fetchMyPropertyAds());
+    } finally {
+      event.detail.complete();
+    }
+  };
+
   useEffect(() => {
     const loadAds = async () => {
       showLoadingSpinner('Loading ads...');
@@ -45,6 +55,9 @@ const OwnerAdsPage: React.FC = () => {
     <IonPage>
         <PageHeader title="My Ads" />
         <IonContent fullscreen>
+          <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
+            <IonRefresherContent></IonRefresherContent>
+          </IonRefresher>
           <IonHeader collapse="condense">
             <IonToolbar>
               <IonTitle size="large">My Ads</IonTitle>

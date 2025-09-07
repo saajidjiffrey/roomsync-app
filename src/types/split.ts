@@ -12,22 +12,24 @@ export interface Split {
   assignedTenant?: {
     id: number;
     user_id: number;
-    tenantUser?: {
+    User?: {
       id: number;
       full_name: string;
       email: string;
+      profile_url: string;
     };
   };
   assignedByTenant?: {
     id: number;
     user_id: number;
-    tenantUser?: {
+    User?: {
       id: number;
       full_name: string;
       email: string;
+      profile_url: string;
     };
   };
-  expense?: {
+  Expense?: {
     id: number;
     title: string;
     description?: string;
@@ -58,6 +60,7 @@ export interface SplitState {
   toPaySplits: Split[];
   toReceiveSplits: Split[];
   historySplits: Split[];
+  splitsByExpense: Split[];
   summary: SplitSummary | null;
   isLoading: boolean;
   error: string | null;

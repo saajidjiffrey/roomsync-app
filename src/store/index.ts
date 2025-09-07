@@ -10,6 +10,8 @@ import joinRequestReducer from './slices/propertyJoinRequestSlice'
 import groupReducer from './slices/groupSlice'
 import expenseReducer from './slices/expenseSlice'
 import splitReducer from './slices/splitSlice'
+import taskReducer from './slices/taskSlice'
+import notificationReducer from './slices/notificationSlice'
 import spinnerReducer from './slices/spinnerSlice'
 import { errorToastMiddleware } from './middleware/errorToastMiddleware'
 
@@ -22,14 +24,16 @@ const rootReducer = combineReducers({
   group: groupReducer,
   expense: expenseReducer,
   split: splitReducer,
+  tasks: taskReducer,
+  notifications: notificationReducer,
   spinner: spinnerReducer,
 })
 
 const persistConfig = {
-  key: 'roomSyncApp', // unique key for your app
+  key: 'roomSyncApp',
   storage,
-  whitelist: ['auth'], // include auth reducer in persistence
-  blacklist: ['counter'], // exclude counter from persistence
+  whitelist: ['auth'],
+  blacklist: ['counter'],
 }
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

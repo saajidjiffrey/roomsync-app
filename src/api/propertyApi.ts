@@ -38,4 +38,9 @@ export const propertyAPI = {
   getPropertiesByOwner: async (ownerId: number): Promise<ApiResponse<Property[]>> => {
     return apiService.get<Property[]>(`/property/owner/${ownerId}`);
   },
+
+  // Leave property (tenant)
+  leaveProperty: async (propertyId: number): Promise<ApiResponse> => {
+    return apiService.post(`/property/${propertyId}/leave`);
+  },
 };

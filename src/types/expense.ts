@@ -12,7 +12,7 @@ export interface Expense {
   creator?: {
     id: number;
     user_id: number;
-    tenantUser?: {
+    User?: {
       id: number;
       full_name: string;
       email: string;
@@ -45,6 +45,7 @@ export interface ExpenseApiResponse {
 
 export interface ExpenseState {
   expenses: Expense[];
+  currentExpense: Expense | null;
   isLoading: boolean;
   error: string | null;
 }

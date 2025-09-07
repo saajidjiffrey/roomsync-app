@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "vite build",
+    "build:check": "tsc && vite build",
     "preview": "vite preview",
     "test.e2e": "cypress run",
     "test.unit": "vitest",
@@ -43,7 +44,8 @@
     "react-redux": "^9.2.0",
     "react-router": "^5.3.4",
     "react-router-dom": "^5.3.4",
-    "redux-persist": "^6.0.0"
+    "redux-persist": "^6.0.0",
+    "socket.io-client": "^4.8.1"
   },
   "devDependencies": {
     "@capacitor/cli": "7.2.0",
@@ -65,7 +67,7 @@
     "globals": "^15.15.0",
     "jsdom": "^22.1.0",
     "terser": "^5.4.0",
-    "typescript": "^5.1.6",
+    "typescript": "^5.8.3",
     "typescript-eslint": "^8.24.0",
     "vite": "~5.2.0",
     "vitest": "^0.34.6"

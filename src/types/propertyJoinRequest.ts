@@ -29,6 +29,9 @@ export interface PropertyJoinRequest {
     tenantUser?: {
       id: number;
       full_name: string;
+      email: string;
+      phone_no: string;
+      profile_url: string;
     };
   };
 }

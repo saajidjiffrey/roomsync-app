@@ -24,10 +24,12 @@ import { useAuth } from '../../../hooks/useAuth';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { fetchAvailableGroups, joinGroup, selectAvailableGroups, selectGroupIsLoading } from '../../../store/slices/groupSlice';
 import { showLoadingSpinner, stopLoadingSpinner } from '../../../utils/spinnerUtils';
+import { useHistory } from 'react-router-dom';
 
 const SelectGroup = () => {
   const { user, refreshUserProfile } = useAuth();
   const dispatch = useAppDispatch();
+  const history = useHistory();
   const availableGroups = useAppSelector(selectAvailableGroups);
   const isLoading = useAppSelector(selectGroupIsLoading);
   
@@ -55,8 +57,6 @@ const SelectGroup = () => {
     present({
       onWillDismiss: async (event: CustomEvent<OverlayEventDetail>) => {
         if (event.detail.role === 'confirm') {
-          // Refresh user profile to get updated group_id after creating/joining group
-          await refreshUserProfile();
           console.log(`Group created/joined: ${event.detail.data}`);
         }
       },
@@ -108,9 +108,15 @@ const SelectGroup = () => {
                         color="primary"
                         onClick={async () => {
                           try {
-                            await dispatch(joinGroup({ group_id: group.id }));
-                            // Refresh user profile to get updated group_id
-                            await refreshUserProfile();
+                            const result = await dispatch(joinGroup({ group_id: group.id }));
+                            
+                            if (joinGroup.fulfilled.match(result)) {
+                              // Fetch updated profile to get new group_id
+                              await refreshUserProfile();
+                              
+                              // Redirect to home page
+                              history.push('/tenant/home');
+                            }
                           } catch (error) {
                             console.error('Failed to join group:', error);
                           }
