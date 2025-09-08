@@ -29,7 +29,7 @@ export async function pickImage(source: ImageSourceOption = 'gallery', quality =
   const cameraSource = source === 'camera' ? CameraSource.Camera : CameraSource.Photos;
   const result = await Camera.getPhoto({
     quality,
-    allowEditing: true,
+    allowEditing: false,
     resultType: CameraResultType.Base64,
     source: cameraSource,
     promptLabelHeader: 'Select Image',
@@ -67,7 +67,18 @@ export async function uploadImage(blob: Blob, pathPrefix = 'general', fileName?:
   }
 
   const data = await response.json();
-  return data.imageUrl;
+  const assetBase = import.meta.env.VITE_ASSET_BASE_URL || import.meta.env.VITE_API_URL;
+  // Normalize returned URL to use configured asset base
+  try {
+    const url = new URL(data.imageUrl);
+    if (assetBase && (url.hostname === 'localhost' || url.hostname === '127.0.0.1')) {
+      const normalized = assetBase.replace(/\/$/, '') + url.pathname;
+      return normalized;
+    }
+    return data.imageUrl;
+  } catch {
+    return data.imageUrl;
+  }
 }
 
 export async function pickAndUpload(options: PickAndUploadOptions = {}): Promise<string> {

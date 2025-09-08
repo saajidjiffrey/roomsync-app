@@ -1,6 +1,7 @@
 import { toastController } from '@ionic/core';
 import { checkmarkCircle, closeCircle, informationCircle, refreshOutline, warningOutline } from 'ionicons/icons';
 import { Capacitor } from '@capacitor/core';
+import { Toast } from '@capacitor/toast';
 
 export interface ToastOptions {
   message: string;
@@ -39,37 +40,30 @@ class ToastService {
    * Show a toast message
    */
   async show(options: ToastOptions): Promise<void> {
-    // On native, also attempt Capacitor Toast plugin as a backup to ensure visibility
-    if (Capacitor.isNativePlatform()) {
-      const capAny = Capacitor as unknown as { Plugins?: Record<string, unknown> };
-      const plugins = capAny.Plugins as Record<string, { show?: (opts: { text: string; duration?: 'short' | 'long' }) => Promise<void> }> | undefined;
-      if (plugins?.Toast?.show) {
-        try {
-          // Fire-and-forget native toast; still attempt Ionic overlay for styling
-          plugins.Toast.show({
-            text: options.message,
-            duration: (options.duration && options.duration >= 3500) ? 'long' : 'short',
-          });
-        } catch {
-          // ignore
-        }
-      }
-    }
-    // Use Ionic-styled toast (supports color, icon, position)
+    // Always try Ionic-styled toast first for consistent styling across platforms
     try {
-      // Slight defer can help overlay z-index settling on device
       await new Promise((r) => requestAnimationFrame(() => r(undefined)));
       const toast = await toastController.create({
         ...this.defaultOptions,
         ...options,
       });
       await toast.present();
+      return;
     } catch {
-      // Last resort fallback so users still see feedback
+      // If Ionic toast fails on native, fall back to Capacitor Toast
+      if (Capacitor.isNativePlatform()) {
+        try {
+          await Toast.show({
+            text: options.message,
+            duration: (options.duration && options.duration >= 3500) ? 'long' : 'short',
+          });
+          return;
+        } catch {
+          // ignore and try final fallback
+        }
+      }
       if (typeof window !== 'undefined' && window.alert) {
         window.alert(options.message);
-      } else {
-        /* no-op */
       }
     }
   }

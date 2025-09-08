@@ -21,10 +21,10 @@ import PageHeader from '../../components/common/PageHeader';
 import { useAuth } from '../../hooks/useAuth';
 import { useAppDispatch } from '../../store/hooks';
 import { updateProfile, updatePassword, getProfile } from '../../store/slices/authSlice';
-import { pickAndUpload } from '../../services/imageService';
+import { pickImage, uploadImage } from '../../services/imageService';
 import { cameraOutline } from 'ionicons/icons';
 import { IonIcon } from '@ionic/react';
-import { useIonActionSheet, useIonToast } from '@ionic/react';
+import { useIonActionSheet, useIonToast, useIonLoading } from '@ionic/react';
 
 interface FormErrors {
   full_name?: string;
@@ -48,6 +48,7 @@ const ProfilePage: React.FC = () => {
   const [pwdErrors, setPwdErrors] = useState<{ currentPassword?: string; newPassword?: string; confirmPassword?: string }>({});
   const [presentActionSheet] = useIonActionSheet();
   const [presentToast] = useIonToast();
+  const [presentLoading, dismissLoading] = useIonLoading();
 
   useEffect(() => {
     setFormData({
@@ -129,11 +130,16 @@ const ProfilePage: React.FC = () => {
                     text: 'Camera',
                     handler: async () => {
                       try {
-                        const url = await pickAndUpload({ source: 'camera', pathPrefix: 'profiles' });
+                        // First pick the image (may open system UI). No loading yet
+                        const { blob } = await pickImage('camera');
+                        await presentLoading({ message: 'Uploading image...', spinner: 'crescent' });
+                        const url = await uploadImage(blob, 'profiles');
                         await dispatch(updateProfile({ profile_url: url }));
                         await dispatch(getProfile());
                       } catch {
                         presentToast({ message: 'Failed to pick image', duration: 2000, color: 'danger' });
+                      } finally {
+                        await dismissLoading();
                       }
                     }
                   },
@@ -141,11 +147,15 @@ const ProfilePage: React.FC = () => {
                     text: 'Gallery',
                     handler: async () => {
                       try {
-                        const url = await pickAndUpload({ source: 'gallery', pathPrefix: 'profiles' });
+                        const { blob } = await pickImage('gallery');
+                        await presentLoading({ message: 'Uploading image...', spinner: 'crescent' });
+                        const url = await uploadImage(blob, 'profiles');
                         await dispatch(updateProfile({ profile_url: url }));
                         await dispatch(getProfile());
                       } catch {
                         presentToast({ message: 'Failed to pick image', duration: 2000, color: 'danger' });
+                      } finally {
+                        await dismissLoading();
                       }
                     }
                   },

@@ -141,9 +141,9 @@ const LoginPage: React.FC = () => {
             </IonText>
             <IonButton fill="clear" size="small" routerLink="/signup">Sign up</IonButton>
           </div>
-          <div className='ion-text-center'>
+          {/* <div className='ion-text-center'>
             <IonButton fill="clear" size="small" onClick={() => setShowForgot(true)}>Forgot password?</IonButton>
-          </div>
+          </div> */}
         </form>
       </IonContent>
       <IonFooter className='ion-padding ion-no-border'>
