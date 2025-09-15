@@ -37,4 +37,9 @@ export const propertyAdApi = {
   deletePropertyAd: async (id: number): Promise<ApiResponse> => {
     return apiService.delete(`/property-ad/${id}`);
   },
+
+  // Get property ads by property ID
+  getPropertyAdsByPropertyId: async (propertyId: number): Promise<ApiResponse<PropertyAd[]>> => {
+    return apiService.get<PropertyAd[]>(`/property-ad/property/${propertyId}`);
+  },
 };

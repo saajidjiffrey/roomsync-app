@@ -14,6 +14,8 @@ import {
   Tasks,
   Notifications
 } from '../../pages/tenant';
+import About from '../../pages/common/About.page';
+import HelpSupport from '../../pages/common/HelpSupport.page';
 import AppMenu from '../common/AppMenu';
 
 const TenantLayout: React.FC = () => {
@@ -36,6 +38,10 @@ const TenantLayout: React.FC = () => {
           <Route path="/tenant/find-property" component={FindPropertyPage} />
           <Route path="/tenant/select-group" component={SelectGroupPage} />
           <Route path="/tenant/my-requests" component={PropertyRequestsPage} />
+          
+          {/* Common routes */}
+          <Route path="/tenant/about" component={About} />
+          <Route path="/tenant/help-support" component={HelpSupport} />
           
           {/* Default redirect */}
           <Route exact path="/tenant">

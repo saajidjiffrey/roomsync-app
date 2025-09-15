@@ -18,11 +18,12 @@ import {
   IonChip,
 } from '@ionic/react';
 import { addOutline, cameraOutline, closeOutline } from 'ionicons/icons';
-import { propertyAPI } from '../api/propertyApi';
 import { showLoadingSpinner, stopLoadingSpinner } from '../utils/spinnerUtils';
 import { pickAndUpload } from '../services/imageService';
 import { useIonActionSheet, useIonToast } from '@ionic/react';
 import { Property } from '../types/property';
+import { useAppDispatch } from '../store/hooks';
+import { updateProperty } from '../store/slices/propertySlice';
 import './EditProperty.modal.css';
 
 interface FormErrors {
@@ -32,6 +33,7 @@ interface FormErrors {
   space_available?: string;
   property_image?: string;
   tags?: string;
+  monthly_rent_per_person?: string;
 }
 
 interface EditPropertyModalProps {
@@ -40,6 +42,7 @@ interface EditPropertyModalProps {
 }
 
 const EditPropertyModal = ({ dismiss, property }: EditPropertyModalProps) => {
+  const dispatch = useAppDispatch();
   const [presentActionSheet] = useIonActionSheet();
   const [presentToast] = useIonToast();
 
@@ -51,6 +54,7 @@ const EditPropertyModal = ({ dismiss, property }: EditPropertyModalProps) => {
     space_available: property?.space_available?.toString() || '',
     property_image: property?.property_image || '',
     tags: property?.tags || [],
+    monthly_rent_per_person: property?.monthly_rent_per_person?.toString() || '',
   });
 
   // Safety check - if property is not available, close modal
@@ -105,6 +109,14 @@ const EditPropertyModal = ({ dismiss, property }: EditPropertyModalProps) => {
       newErrors.tags = 'At least one tag is required';
     }
     
+    // Validate monthly rent per person (optional but if provided, should be valid)
+    if (formData.monthly_rent_per_person.trim()) {
+      const rentAmount = parseFloat(formData.monthly_rent_per_person.trim());
+      if (isNaN(rentAmount) || rentAmount < 0) {
+        newErrors.monthly_rent_per_person = 'Monthly rent must be a valid positive number';
+      }
+    }
+    
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -126,24 +138,13 @@ const EditPropertyModal = ({ dismiss, property }: EditPropertyModalProps) => {
         space_available: parseInt(formData.space_available.trim(), 10),
         property_image: formData.property_image || undefined,
         tags: formData.tags,
+        monthly_rent_per_person: formData.monthly_rent_per_person.trim() 
+          ? parseFloat(formData.monthly_rent_per_person.trim()) 
+          : undefined,
       };
 
-      const response = await propertyAPI.updateProperty(property.id, updateData);
-      
-      if (response.success) {
-        presentToast({
-          message: 'Property updated successfully!',
-          duration: 2000,
-          color: 'success'
-        });
-        dismiss(null, 'confirm');
-      } else {
-        presentToast({
-          message: response.message || 'Failed to update property',
-          duration: 3000,
-          color: 'danger'
-        });
-      }
+      await dispatch(updateProperty({ id: property.id, data: updateData }));
+      dismiss(null, 'confirm');
     } catch (error) {
       console.error('Error updating property:', error);
       presentToast({
@@ -300,6 +301,20 @@ const EditPropertyModal = ({ dismiss, property }: EditPropertyModalProps) => {
               className={errors.space_available ? 'ion-invalid ion-touched' : ''}
             />
             {errors.space_available && <IonLabel color="danger" style={{ fontSize: '0.8rem' }}>{errors.space_available}</IonLabel>}
+          </IonItem>
+          
+          <IonItem>
+            <IonInput 
+              labelPlacement="stacked" 
+              mode='md' 
+              type='number' 
+              label="Monthly Rent per Person (Optional)" 
+              placeholder="Enter monthly rent amount"
+              value={formData.monthly_rent_per_person}
+              onIonInput={(e) => handleInputChange('monthly_rent_per_person', e.detail.value!)}
+              className={errors.monthly_rent_per_person ? 'ion-invalid ion-touched' : ''}
+            />
+            {errors.monthly_rent_per_person && <IonLabel color="danger" style={{ fontSize: '0.8rem' }}>{errors.monthly_rent_per_person}</IonLabel>}
           </IonItem>
         </IonList>
 

@@ -20,6 +20,8 @@ import {
   informationCircleOutline,
   peopleOutline,
   homeOutline,
+  searchOutline,
+  listOutline,
 } from 'ionicons/icons';
 import { useAuth } from '../../hooks/useAuth';
 import { useHistory } from 'react-router-dom';
@@ -89,18 +91,34 @@ const AppMenu: React.FC<AppMenuProps> = ({ menuId }) => {
         <IonList>
           {user?.role === 'tenant' && (
             <>
-              {user?.tenant_profile?.group_id && (
-                <IonItem button onClick={() => history.push('/tenant/group-detail')}>
-                  <IonIcon slot="start" icon={peopleOutline} />
-                  <IonLabel>View Group</IonLabel>
-                </IonItem>
-              )}
               {/* If tenant has property_id, show View Property link */}
               {user?.tenant_profile?.property_id && (
                 <IonItem button onClick={() => history.push(`/tenant/property-details/${user?.tenant_profile?.property_id}`)}>
                   <IonIcon slot="start" icon={homeOutline} />
                   <IonLabel>View Property</IonLabel>
                 </IonItem>
+              )}
+              
+              {/* If tenant has group_id, show View Group link */}
+              {user?.tenant_profile?.group_id && (
+                <IonItem button onClick={() => history.push(`/tenant/group-detail/${user?.tenant_profile?.group_id}`)}>
+                  <IonIcon slot="start" icon={peopleOutline} />
+                  <IonLabel>View Group</IonLabel>
+                </IonItem>
+              )}
+              
+              {/* If tenant doesn't have property_id, show Find Property and View My Requests */}
+              {!user?.tenant_profile?.property_id && (
+                <>
+                  <IonItem button onClick={() => history.push('/tenant/find-property')}>
+                    <IonIcon slot="start" icon={searchOutline} />
+                    <IonLabel>Find Property</IonLabel>
+                  </IonItem>
+                  <IonItem button onClick={() => history.push('/tenant/my-requests')}>
+                    <IonIcon slot="start" icon={listOutline} />
+                    <IonLabel>View My Requests</IonLabel>
+                  </IonItem>
+                </>
               )}
             </>
           )}
@@ -109,12 +127,12 @@ const AppMenu: React.FC<AppMenuProps> = ({ menuId }) => {
             <IonLabel>Profile</IonLabel>
           </IonItem>
 
-          <IonItem button>
+          <IonItem button onClick={() => history.push(`/${user?.role}/help-support`)}>
             <IonIcon slot="start" icon={helpOutline} />
             <IonLabel>Help & Support</IonLabel>
           </IonItem>
 
-          <IonItem button>
+          <IonItem button onClick={() => history.push(`/${user?.role}/about`)}>
             <IonIcon slot="start" icon={informationCircleOutline} />
             <IonLabel>About</IonLabel>
           </IonItem>

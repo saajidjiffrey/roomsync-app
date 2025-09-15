@@ -28,7 +28,7 @@ import { Property } from '../../types/property';
 import { showLoadingSpinner, stopLoadingSpinner } from '../../utils/spinnerUtils';
 import { CreatePropertyAdModal, EditPropertyModal } from '../../modals';
 import { OverlayEventDetail } from '@ionic/react/dist/types/components/react-component-lib/interfaces';
-import { add, create, globe, newspaperOutline, pencil } from 'ionicons/icons';
+import { create, newspaperOutline, pencil } from 'ionicons/icons';
 
 const OwnerPropertyDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -135,10 +135,15 @@ const OwnerPropertyDetailPage: React.FC = () => {
           </IonNote>
           <br />
           <IonText className='ion-text-wrap'>
-            <p>
+            <p className='m-0'>
               {property.space_available} remaining spaces available
             </p>
           </IonText>
+          {property.monthly_rent_per_person && (
+            <IonChip color="primary" className='mb-3'>
+              {property.monthly_rent_per_person} monthly rent per person
+            </IonChip>
+          )}
         </div>
         
         

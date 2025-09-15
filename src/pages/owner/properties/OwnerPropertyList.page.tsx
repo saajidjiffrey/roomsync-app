@@ -8,24 +8,30 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
-  useIonModal,
   IonText,
   IonRefresher,
-  IonRefresherContent
+  IonRefresherContent,
+  IonModal
 } from '@ionic/react';
 import { PropertyCard } from '../../../components/property/PropertyCard';
 import { add } from 'ionicons/icons';
 import { OverlayEventDetail } from '@ionic/react/dist/types/components/react-component-lib/interfaces';
 import CreatePropertyModal from '../../../modals/CreateProperty.modal';
 import PageHeader from '../../../components/common/PageHeader';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
-import { fetchMyProperties } from '../../../store/slices/propertySlice';
+import { fetchMyProperties, deleteProperty } from '../../../store/slices/propertySlice';
 import { showLoadingSpinner, stopLoadingSpinner } from '../../../utils/spinnerUtils';
+import { useIonAlert, useIonModal } from '@ionic/react';
+import EditPropertyModal from '../../../modals/EditProperty.modal';
+import { Property } from '../../../types/property';
 
 const OwnerPropertyPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const { properties, isLoading } = useAppSelector((state) => state.property);
+  const [presentAlert] = useIonAlert();
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
 
   useEffect(() => {
     const loadProperties = async () => {
@@ -42,6 +48,8 @@ const OwnerPropertyPage: React.FC = () => {
   const [present, dismiss] = useIonModal(CreatePropertyModal, {
     dismiss: (data: string, role: string) => dismiss(data, role),
   });
+
+  // const [presentEditModal] = useIonModal(EditPropertyModal);
 
   const handleRefresh = async (event: CustomEvent) => {
     try {
@@ -63,6 +71,49 @@ const OwnerPropertyPage: React.FC = () => {
     });
   }
 
+  const handleEditProperty = (property: Property) => {
+    setSelectedProperty(property);
+    setIsEditModalOpen(true);
+  };
+
+  const handleEditModalDismiss = (data?: string | number | null | undefined, role?: string) => {
+    setIsEditModalOpen(false);
+    setSelectedProperty(null);
+    if (role === 'confirm') {
+      // Refresh properties after editing
+      dispatch(fetchMyProperties());
+    }
+  };
+
+  const handleDeleteProperty = async (property: Property) => {
+    presentAlert({
+      header: 'Delete Property',
+      message: 'Are you sure you want to delete this property? This action cannot be undone.',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+        },
+        {
+          text: 'Delete',
+          role: 'destructive',
+          handler: async () => {
+            try {
+              showLoadingSpinner('Deleting property...');
+              await dispatch(deleteProperty(property.id));
+              // Refresh properties after deletion
+              await dispatch(fetchMyProperties());
+            } catch (error) {
+              console.error('Error deleting property:', error);
+            } finally {
+              stopLoadingSpinner();
+            }
+          },
+        },
+      ],
+    });
+  };
+
   const renderContent = () => {
     if (!properties || properties.length === 0 && !isLoading) {
       return (
@@ -77,7 +128,12 @@ const OwnerPropertyPage: React.FC = () => {
     return (
       <IonList lines='inset' inset={true}>
         {properties.map((property) => (
-          <PropertyCard key={property.id} property={property} />
+          <PropertyCard 
+            key={property.id} 
+            property={property} 
+            onEdit={handleEditProperty}
+            onDelete={handleDeleteProperty}
+          />
         ))}
       </IonList>
     );
@@ -102,6 +158,15 @@ const OwnerPropertyPage: React.FC = () => {
             </IonFabButton>
           </IonFab>
         </IonContent>
+        
+        <IonModal isOpen={isEditModalOpen} onDidDismiss={() => setIsEditModalOpen(false)}>
+          {selectedProperty && (
+            <EditPropertyModal 
+              property={selectedProperty} 
+              dismiss={handleEditModalDismiss}
+            />
+          )}
+        </IonModal>
     </IonPage>
   );
 };

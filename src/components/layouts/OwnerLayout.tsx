@@ -12,6 +12,8 @@ import { Route, Redirect } from 'react-router-dom';
 import { OwnerPropertyListPage, OwnerAdsListPage, OwnerRequestListPage } from '../../pages/owner';
 import PropertyDetailPage from '../../pages/property/PropertyDetail.page';
 import GroupDetailPage from '../../pages/tenant/groups/GroupDetail.page';
+import About from '../../pages/common/About.page';
+import HelpSupport from '../../pages/common/HelpSupport.page';
 import AppMenu from '../common/AppMenu';
 
 const OwnerLayout: React.FC = () => {
@@ -28,6 +30,10 @@ const OwnerLayout: React.FC = () => {
           {/* Additional owner routes */}
           <Route path="/owner/property-details/:id" component={PropertyDetailPage} />
           <Route path="/owner/group-detail/:groupId" component={GroupDetailPage} />
+          
+          {/* Common routes */}
+          <Route path="/owner/about" component={About} />
+          <Route path="/owner/help-support" component={HelpSupport} />
           
           {/* Default redirect */}
           <Route exact path="/owner">

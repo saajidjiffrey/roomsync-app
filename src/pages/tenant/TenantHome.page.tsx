@@ -24,7 +24,7 @@ import { fetchExpensesByGroup, selectExpenses, selectExpenseIsLoading } from '..
 import { fetchSplitSummary, selectSplitSummary, selectSplitIsLoading } from '../../store/slices/splitSlice';
 
 const TenantHome: React.FC = () => {
-  const { user } = useAuth();
+  const { user, refreshUserProfile } = useAuth();
   const history = useHistory();
   const dispatch = useAppDispatch();
   
@@ -63,6 +63,10 @@ const TenantHome: React.FC = () => {
 
   const handleRefresh = async (event: CustomEvent) => {
     try {
+      // Always refresh user profile to get latest property_id and group_id
+      await refreshUserProfile();
+      
+      // If user has a group, also refresh group-related data
       if (groupId) {
         await Promise.all([
           dispatch(fetchExpensesByGroup(groupId)),
@@ -80,18 +84,30 @@ const TenantHome: React.FC = () => {
       <IonPage>
         <PageHeader title="Home" />
         <IonContent className="ion-padding">
+          <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
+            <IonRefresherContent></IonRefresherContent>
+          </IonRefresher>
           <div className="ion-text-center ion-margin-top">
             <IonText>
               <h2>Please join a property</h2>
               <p>You need to join a property to access group features.</p>
             </IonText>
-            <IonButton 
-              expand="block" 
-              onClick={() => history.push('/tenant/find-property')}
-              className="ion-margin-top"
-            >
-              Find Property
-            </IonButton>
+            <div className="ion-margin-top">
+              <IonButton 
+                expand="block" 
+                onClick={() => history.push('/tenant/find-property')}
+                className="ion-margin-bottom"
+              >
+                Find Property
+              </IonButton>
+              <IonButton 
+                expand="block" 
+                fill="outline"
+                onClick={() => history.push('/tenant/my-requests')}
+              >
+                View My Requests
+              </IonButton>
+            </div>
           </div>
         </IonContent>
       </IonPage>
@@ -104,6 +120,9 @@ const TenantHome: React.FC = () => {
       <IonPage>
         <PageHeader title="Home" />
         <IonContent className="ion-padding">
+          <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
+            <IonRefresherContent></IonRefresherContent>
+          </IonRefresher>
           <div className="ion-text-center ion-margin-top">
             <IonText>
               <h2>Please join a group</h2>
@@ -140,7 +159,8 @@ const TenantHome: React.FC = () => {
                 {expensesLoading ? (
                   <IonSkeletonText animated style={{ width: '60%', height: '1.5rem' }} />
                 ) : (
-                  <h2 className="mb-0">LKR {getMonthlyTotalExpenses().toFixed(2)}</h2>
+                  <h4 className="mb-0">LKR <br />
+                  {getMonthlyTotalExpenses().toFixed(2)}</h4>
                 )}
               </div>
             </div>
@@ -150,7 +170,8 @@ const TenantHome: React.FC = () => {
                 {splitLoading ? (
                   <IonSkeletonText animated style={{ width: '60%', height: '1.5rem' }} />
                 ) : (
-                  <h2 className="mb-0">LKR {parseFloat(String(splitSummary?.toReceive?.total || 0)).toFixed(2)}</h2>
+                  <h4 className="mb-0">LKR <br />
+                  {parseFloat(String(splitSummary?.toReceive?.total || 0)).toFixed(2)}</h4>
                 )}
               </div>
             </div>
@@ -160,7 +181,8 @@ const TenantHome: React.FC = () => {
                 {splitLoading ? (
                   <IonSkeletonText animated style={{ width: '60%', height: '1.5rem' }} />
                 ) : (
-                  <h2 className="mb-0">LKR {parseFloat(String(splitSummary?.toPay?.total || 0)).toFixed(2)}</h2>
+                  <h4 className="mb-0">LKR <br />
+                   {parseFloat(String(splitSummary?.toPay?.total || 0)).toFixed(2)}</h4>
                 )}
               </div>
             </div>
@@ -196,7 +218,7 @@ const TenantHome: React.FC = () => {
               </IonItem>
             ) : (
               recentExpenses.map((expense) => (
-                <IonItem key={expense.id} button>
+                <IonItem key={expense.id}>
                   {/* <IonAvatar slot="start">
                     <img src="/images/user_placeholder.jpg" alt="" />
                   </IonAvatar> */}

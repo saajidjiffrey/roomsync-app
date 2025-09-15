@@ -64,6 +64,12 @@ const Expenses: React.FC = () => {
 
   // Helpers
 
+  const sortedHistorySplits = [...historySplits].sort((a, b) => {
+    const timeA = a.paid_date ? new Date(a.paid_date as unknown as string).getTime() : 0;
+    const timeB = b.paid_date ? new Date(b.paid_date as unknown as string).getTime() : 0;
+    return timeB - timeA; // Newest first
+  });
+
   const tenantId = user?.tenant_profile?.id;
 
   const handlePay = async (splitId: number) => {
@@ -116,13 +122,22 @@ const Expenses: React.FC = () => {
               <h2>Please join a property</h2>
               <p>You need to join a property to access expense features.</p>
             </IonText>
-            <IonButton 
-              expand="block" 
-              onClick={() => history.push('/tenant/find-property')}
-              className="ion-margin-top"
-            >
-              Find Property
-            </IonButton>
+            <div className="ion-margin-top">
+              <IonButton 
+                expand="block" 
+                onClick={() => history.push('/tenant/find-property')}
+                className="ion-margin-bottom"
+              >
+                Find Property
+              </IonButton>
+              <IonButton 
+                expand="block" 
+                fill="outline"
+                onClick={() => history.push('/tenant/my-requests')}
+              >
+                View My Requests
+              </IonButton>
+            </div>
           </div>
         </IonContent>
       </IonPage>
@@ -180,7 +195,8 @@ const Expenses: React.FC = () => {
                 {isLoading ? (
                   <IonSkeletonText animated style={{ width: '60%', height: '1.5rem' }} />
                 ) : (
-                  <h2 className="mb-0">LKR {formatAmount(splitSummary?.toReceive?.total)}</h2>
+                  <h4 className="mb-0">LKR <br />
+                  {formatAmount(splitSummary?.toReceive?.total)}</h4>
                 )}
                 <small>{splitSummary?.toReceive?.count || 0} pending</small>
               </div>
@@ -191,7 +207,8 @@ const Expenses: React.FC = () => {
                 {isLoading ? (
                   <IonSkeletonText animated style={{ width: '60%', height: '1.5rem' }} />
                 ) : (
-                  <h2 className="mb-0">LKR {formatAmount(splitSummary?.toPay?.total)}</h2>
+                  <h4 className="mb-0">LKR <br />
+                  {formatAmount(splitSummary?.toPay?.total)}</h4>
                 )}
                 <small>{splitSummary?.toPay?.count || 0} pending</small>
               </div>
@@ -232,7 +249,7 @@ const Expenses: React.FC = () => {
                   </IonItem>
                 ) : (
                   toPaySplits.map((split) => (
-                    <IonItem key={split.id} button>
+                    <IonItem key={split.id}>
                       <IonAvatar slot="start">
                         <img src={split.assignedByTenant?.User?.profile_url || "/images/user_placeholder.jpg"} alt="" />
                       </IonAvatar>
@@ -241,14 +258,18 @@ const Expenses: React.FC = () => {
                         <p>To: {split.assignedByTenant?.User?.full_name}</p>
                         <p>Category: {split.Expense?.category}</p>
                       </IonLabel>
-                      <IonChip color="warning" slot="end">
-                        LKR {formatAmount(split.split_amount)}
-                      </IonChip>
-                      {split.status === 'unpaid' ? (
-                        <IonButton slot="end" color="primary" onClick={() => handlePay(split.id)}>Pay</IonButton>
-                      ) : split.status === 'pending' ? (
-                        <IonChip slot="end" color="medium">Pending</IonChip>
-                      ) : null}
+                      <div slot="end" className="ion-text-end">
+                        <IonChip color="warning" className="mb-1">
+                          LKR {formatAmount(split.split_amount)}
+                        </IonChip>
+                        <div>
+                          {split.status === 'unpaid' ? (
+                            <IonButton color="primary" onClick={() => handlePay(split.id)}>Pay</IonButton>
+                          ) : split.status === 'pending' ? (
+                            <IonChip color="medium">Pending</IonChip>
+                          ) : null}
+                        </div>
+                      </div>
                     </IonItem>
                   ))
                 )}
@@ -276,23 +297,27 @@ const Expenses: React.FC = () => {
                   </IonItem>
                 ) : (
                   toReceiveSplits.map((split) => (
-                    <IonItem key={split.id} button>
+                    <IonItem key={split.id}>
                       <IonAvatar slot="start">
-                        <img src={split.assignedByTenant?.User?.profile_url || "/images/user_placeholder.jpg"} alt="" />
+                        <img src={split.assignedTenant?.User?.profile_url || "/images/user_placeholder.jpg"} alt="" />
                       </IonAvatar>
                       <IonLabel>
                         <h2>{split.Expense?.title}</h2>
                         <p>From: {split.assignedTenant?.User?.full_name}</p>
                         <p>Category: {split.Expense?.category}</p>
                       </IonLabel>
-                      <IonChip color="success" slot="end">
-                        LKR {formatAmount(split.split_amount)}
-                      </IonChip>
-                      {split.status === 'pending' ? (
-                        <IonButton slot="end" color="success" onClick={() => handleConfirm(split.id)}>Confirm</IonButton>
-                      ) : split.status === 'unpaid' ? (
-                        <IonChip slot="end" color="medium">Pending</IonChip>
-                      ) : null}
+                      <div slot="end" className="ion-text-end">
+                        <IonChip color="success" className="mb-1">
+                          LKR {formatAmount(split.split_amount)}
+                        </IonChip>
+                        <div>
+                          {split.status === 'pending' ? (
+                            <IonButton color="success" onClick={() => handleConfirm(split.id)}>Confirm</IonButton>
+                          ) : split.status === 'unpaid' ? (
+                            <IonChip color="medium">Pending</IonChip>
+                          ) : null}
+                        </div>
+                      </div>
                     </IonItem>
                   ))
                 )}
@@ -311,7 +336,7 @@ const Expenses: React.FC = () => {
                       <IonSkeletonText animated style={{ width: '100%', height: '4rem' }} />
                     </IonItem>
                   ))
-                ) : historySplits.length === 0 ? (
+                ) : sortedHistorySplits.length === 0 ? (
                   <IonItem>
                     <IonLabel className="ion-text-center">
                       <h3>No payment history</h3>
@@ -319,8 +344,8 @@ const Expenses: React.FC = () => {
                     </IonLabel>
                   </IonItem>
                 ) : (
-                  historySplits.map((split) => (
-                    <IonItem key={split.id} button>
+                  sortedHistorySplits.map((split) => (
+                    <IonItem key={split.id}>
                       <IonAvatar slot="start">
                         <img src={split.assignedByTenant?.User?.profile_url || "/images/user_placeholder.jpg"} alt="" />
                       </IonAvatar>
@@ -337,11 +362,16 @@ const Expenses: React.FC = () => {
                         <p>Category: {split.Expense?.category}</p>
                         <p>Paid: {split.paid_date ? new Date(split.paid_date).toLocaleDateString() : 'N/A'}</p>
                       </IonLabel>
-                      {tenantId && split.assigned_to === tenantId ? (
-                        <IonChip color="danger" slot="end">LKR {formatAmount(split.split_amount)}</IonChip>
-                      ) : (
-                        <IonChip color="success" slot="end">LKR {formatAmount(split.split_amount)}</IonChip>
-                      )}
+                      <div slot="end" className="ion-text-end">
+                        {tenantId && split.assigned_to === tenantId ? (
+                          <IonChip color="danger" className="mb-1">LKR {formatAmount(split.split_amount)}</IonChip>
+                        ) : (
+                          <IonChip color="success" className="mb-1">LKR {formatAmount(split.split_amount)}</IonChip>
+                        )}
+                        <div>
+                          <IonChip color="medium" size="small">Paid</IonChip>
+                        </div>
+                      </div>
                     </IonItem>
                   ))
                 )}

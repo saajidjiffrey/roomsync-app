@@ -145,9 +145,9 @@ const notificationSlice = createSlice({
       .addCase(fetchNotifications.fulfilled, (state, action) => {
         state.isLoading = false;
         if (action.payload) {
-          state.notifications = action.payload.notifications;
-          state.total = action.payload.total;
-          state.hasMore = action.payload.hasMore;
+          state.notifications = action.payload.notifications || [];
+          state.total = action.payload.total || 0;
+          state.hasMore = action.payload.hasMore || false;
         }
         state.error = null;
       })
@@ -164,7 +164,7 @@ const notificationSlice = createSlice({
       .addCase(fetchUnreadCount.fulfilled, (state, action) => {
         state.isUnreadCountLoading = false;
         if (action.payload) {
-          state.unreadCount = action.payload.count;
+          state.unreadCount = action.payload.count || 0;
         }
       })
       .addCase(fetchUnreadCount.rejected, (state, action) => {

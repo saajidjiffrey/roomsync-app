@@ -351,11 +351,11 @@ const CreateExpenseModal = ({ dismiss }: { dismiss: (data?: string | null | unde
         </IonList>
 
         {selectedRoommates.length > 0 && formData.amount && (
-          <IonCard className="ion-margin">
+          <IonCard className="ion-margin mt-5">
             <IonCardContent>
-              <div className="ion-text-center ion-margin-bottom">
-                <IonText color="primary">
-                  <h3>Split Summary</h3>
+              <div className="ion-margin-bottom ion-padding-start">
+                <IonText color="dark">
+                  <h3 className='fw-bold fs-5'>Split Summary</h3>
                 </IonText>
               </div>
               

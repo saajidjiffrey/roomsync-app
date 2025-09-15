@@ -16,8 +16,10 @@ import { add } from 'ionicons/icons';
 import { useEffect } from 'react';
 import PageHeader from '../../../components/common/PageHeader';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
-import { fetchMyPropertyAds } from '../../../store/slices/propertyAdSlice';
+import { fetchMyPropertyAds, togglePropertyAdStatus, deletePropertyAd } from '../../../store/slices/propertyAdSlice';
 import { showLoadingSpinner, stopLoadingSpinner } from '../../../utils/spinnerUtils';
+import { useIonAlert } from '@ionic/react';
+import { PropertyAd as PropertyAdType } from '../../../types/propertyAd';
 import { IonText } from '@ionic/react';
 import { CreatePropertyAdModal } from '../../../modals';
 import { OverlayEventDetail } from '@ionic/react/dist/types/components/react-component-lib/interfaces';
@@ -27,6 +29,7 @@ import PropertyAd from '../../../components/property/PropertyAd/PropertyAd';
 const OwnerAdsPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const { propertyAds, isLoading } = useAppSelector((state) => state.propertyAd);
+  const [presentAlert] = useIonAlert();
 
   const [present, dismiss] = useIonModal(CreatePropertyAdModal, {
     dismiss: (data: string, role: string) => dismiss(data, role),
@@ -51,6 +54,48 @@ const OwnerAdsPage: React.FC = () => {
     };
     loadAds();
   }, [dispatch]);
+
+  const handleToggleAdStatus = async (ad: PropertyAdType) => {
+    try {
+      showLoadingSpinner('Updating ad status...');
+      await dispatch(togglePropertyAdStatus(ad.id));
+      // Refresh ads after status change
+      await dispatch(fetchMyPropertyAds());
+    } catch (error) {
+      console.error('Error toggling ad status:', error);
+    } finally {
+      stopLoadingSpinner();
+    }
+  };
+
+  const handleDeleteAd = async (ad: PropertyAdType) => {
+    presentAlert({
+      header: 'Delete Property Ad',
+      message: 'Are you sure you want to delete this property ad? This action cannot be undone.',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+        },
+        {
+          text: 'Delete',
+          role: 'destructive',
+          handler: async () => {
+            try {
+              showLoadingSpinner('Deleting ad...');
+              await dispatch(deletePropertyAd(ad.id));
+              // Refresh ads after deletion
+              await dispatch(fetchMyPropertyAds());
+            } catch (error) {
+              console.error('Error deleting ad:', error);
+            } finally {
+              stopLoadingSpinner();
+            }
+          },
+        },
+      ],
+    });
+  };
   return (
     <IonPage>
         <PageHeader title="My Ads" />
@@ -72,7 +117,12 @@ const OwnerAdsPage: React.FC = () => {
           ) : (
             <IonList lines='inset' inset={true}>
               {propertyAds.map((ad) => (
-                <PropertyAd key={ad.id} ad={ad} />
+                <PropertyAd 
+                  key={ad.id} 
+                  ad={ad} 
+                  onToggleStatus={handleToggleAdStatus}
+                  onDelete={handleDeleteAd}
+                />
               ))}
             </IonList>
           )}

@@ -13,6 +13,7 @@ type Props = {
 
 const TenantRequest: React.FC<Props> = ({ request, showActions = true }) => {
   const dispatch = useAppDispatch();
+  console.log(request);
 
   const getStatusChipColor = (status: string) => {
     switch (status) {
@@ -31,7 +32,7 @@ const TenantRequest: React.FC<Props> = ({ request, showActions = true }) => {
         <IonLabel className='ion-align-self-start'>
           <strong>{request.tenant?.tenantUser?.full_name ?? `${request.tenant?.tenantUser?.full_name} #${request.tenant_id}`}</strong>
           <IonNote color="medium" className="ion-text-wrap">
-            Wants to be a tenant of the property <span>{request.propertyAd?.property?.name ?? `Ad #${request.property_ad_id}`}</span>
+            Wants to be a tenant of the property <span>{request.PropertyAd?.Property?.name ?? `Ad #${request.property_ad_id}`}</span>
           </IonNote>
         </IonLabel>
         {showActions ? (

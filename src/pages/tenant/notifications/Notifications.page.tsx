@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useCallback, useRef } from 'react';
 import { 
   IonContent, 
   IonPage, 
@@ -33,39 +33,37 @@ import {
   fetchNotifications, 
   fetchUnreadCount, 
   markNotificationAsRead, 
-  markAllNotificationsAsRead, 
   deleteNotification 
 } from '../../../store/slices/notificationSlice';
-import { showLoadingSpinner, stopLoadingSpinner } from '../../../utils/spinnerUtils';
 import { formatDistanceToNow } from 'date-fns';
 import { Notification } from '../../../api/notificationApi';
 
 const Notifications: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { notifications, unreadCount, isLoading, hasMore } = useAppSelector((state) => state.notifications);
-  const [offset, setOffset] = useState(0);
+  const { notifications, isLoading, hasMore } = useAppSelector((state) => state.notifications);
   const limit = 20;
+  const offsetRef = useRef(0);
 
   const loadNotifications = useCallback(async (reset = false) => {
-    const currentOffset = reset ? 0 : offset;
-    
     if (reset) {
-      setOffset(0);
+      offsetRef.current = 0;
     }
 
     try {
+      const currentOffset = reset ? 0 : offsetRef.current;
       await dispatch(fetchNotifications({ 
         limit, 
         offset: currentOffset 
       }));
       
       if (!reset) {
-        setOffset(currentOffset + limit);
+        const newOffset = currentOffset + limit;
+        offsetRef.current = newOffset;
       }
     } catch (error) {
       console.error('Error loading notifications:', error);
     }
-  }, [dispatch, limit, offset]);
+  }, [dispatch, limit]);
 
   const loadUnreadCount = useCallback(async () => {
     try {
@@ -76,9 +74,14 @@ const Notifications: React.FC = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    loadNotifications();
-    loadUnreadCount();
-  }, []); // Only run once on mount
+    const loadInitialData = async () => {
+      await loadNotifications(true); // Load initial notifications
+      await loadUnreadCount();
+    };
+    
+    loadInitialData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Empty dependency array - only run once on mount
 
   const handleRefresh = async (event: CustomEvent) => {
     await loadNotifications(true);
@@ -101,16 +104,6 @@ const Notifications: React.FC = () => {
     }
   };
 
-  const handleMarkAllAsRead = async () => {
-    try {
-      showLoadingSpinner('Marking all as read...');
-      await dispatch(markAllNotificationsAsRead());
-    } catch (error) {
-      console.error('Error marking all notifications as read:', error);
-    } finally {
-      stopLoadingSpinner();
-    }
-  };
 
   const handleDeleteNotification = async (notificationId: number) => {
     try {
@@ -120,16 +113,37 @@ const Notifications: React.FC = () => {
     }
   };
 
+  const formatNotificationDate = (dateString: string | null | undefined): string => {
+    if (!dateString) {
+      return 'No date';
+    }
+    
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) {
+        return 'Invalid date';
+      }
+      return formatDistanceToNow(date, { addSuffix: true });
+    } catch {
+      return 'Invalid date';
+    }
+  };
+
+
   const getNotificationIcon = (type: string) => {
     switch (type) {
       case 'expense_created':
         return cardOutline;
       case 'split_paid':
         return checkmarkDoneOutline;
+      case 'split_confirmed':
+        return checkmarkDoneOutline;
       case 'property_joined':
         return homeOutline;
       case 'property_join_requested':
         return personOutline;
+      case 'property_left':
+        return homeOutline;
       case 'group_joined':
         return peopleOutline;
       case 'task_assigned':
@@ -147,10 +161,14 @@ const Notifications: React.FC = () => {
         return 'primary';
       case 'split_paid':
         return 'success';
+      case 'split_confirmed':
+        return 'success';
       case 'property_joined':
         return 'tertiary';
       case 'property_join_requested':
         return 'warning';
+      case 'property_left':
+        return 'danger';
       case 'group_joined':
         return 'secondary';
       case 'task_assigned':
@@ -173,9 +191,9 @@ const Notifications: React.FC = () => {
         <h3 className={!notification.is_read ? 'font-weight-bold' : ''}>
           {notification.message}
         </h3>
-        <p className="ion-text-wrap">
-          <IonIcon icon={timeOutline} size="small" className="ion-margin-end" />
-          {formatDistanceToNow(new Date(notification.created_at), { addSuffix: true })}
+        <p className="ion-text-wrap d-flex align-items-center mt-2">
+          <IonIcon icon={timeOutline} size="small" className="me-2" />
+          {formatNotificationDate(notification.createdAt)}
         </p>
         {notification.sender && (
           <p className="ion-text-wrap">
@@ -254,18 +272,7 @@ const Notifications: React.FC = () => {
     <IonPage>
       <PageHeader 
         title="Notifications" 
-        rightContent={
-          unreadCount > 0 && (
-            <IonButton 
-              fill="clear" 
-              size="small"
-              onClick={handleMarkAllAsRead}
-            >
-              <IonIcon icon={checkmarkDoneOutline} slot="start" />
-              Mark All Read
-            </IonButton>
-          )
-        }
+        
       />
       <IonContent>
         <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>

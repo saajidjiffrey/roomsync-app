@@ -11,8 +11,8 @@ export interface Notification {
   related_entity_type?: 'expense' | 'split' | 'property' | 'property_join_request' | 'group' | 'task';
   related_entity_id?: number;
   metadata?: Record<string, any>;
-  created_at: string;
-  updated_at: string;
+  createdAt: string;
+  updatedAt: string;
   sender?: {
     id: number;
     User: {

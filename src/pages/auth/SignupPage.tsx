@@ -190,7 +190,7 @@ const SignupPage: React.FC = () => {
                 mode='md' 
                 type='tel' 
                 label="Phone Number" 
-                placeholder="Enter phone number"
+                placeholder="Enter phone number (e.g. +94771234567)"
                 value={formData.phone_no}
                 onIonInput={(e) => handleInputChange('phone_no', e.detail.value || '')}
                 className={errors.phone_no ? 'ion-invalid' : ''}

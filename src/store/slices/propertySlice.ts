@@ -40,6 +40,22 @@ export const fetchMyProperties = createAsyncThunk(
   }
 );
 
+export const fetchPropertyById = createAsyncThunk(
+  'property/fetchPropertyById',
+  async (propertyId: number, { rejectWithValue }) => {
+    try {
+      const response = await propertyAPI.getPropertyById(propertyId);
+      if (response.success && response.data) {
+        return response.data;
+      } else {
+        return rejectWithValue(response.message || 'Failed to fetch property');
+      }
+    } catch (error: unknown) {
+      return rejectWithValue(extractErrorMessage(error, 'Failed to fetch property'));
+    }
+  }
+);
+
 export const createProperty = createAsyncThunk(
   'property/createProperty',
   async (propertyData: CreatePropertyRequest, { rejectWithValue }) => {
@@ -71,6 +87,40 @@ export const leaveProperty = createAsyncThunk(
       }
     } catch (error: unknown) {
       return rejectWithValue(extractErrorMessage(error, 'Failed to leave property'));
+    }
+  }
+);
+
+export const updateProperty = createAsyncThunk(
+  'property/updateProperty',
+  async ({ id, data }: { id: number; data: Partial<CreatePropertyRequest> }, { rejectWithValue }) => {
+    try {
+      const response = await propertyAPI.updateProperty(id, data);
+      if (response.success && response.data) {
+        toastService.success(response.message || 'Property updated successfully');
+        return response.data;
+      } else {
+        return rejectWithValue(response.message || 'Failed to update property');
+      }
+    } catch (error: unknown) {
+      return rejectWithValue(extractErrorMessage(error, 'Failed to update property'));
+    }
+  }
+);
+
+export const deleteProperty = createAsyncThunk(
+  'property/deleteProperty',
+  async (propertyId: number, { rejectWithValue }) => {
+    try {
+      const response = await propertyAPI.deleteProperty(propertyId);
+      if (response.success) {
+        toastService.success(response.message || 'Property deleted successfully');
+        return propertyId;
+      } else {
+        return rejectWithValue(response.message || 'Failed to delete property');
+      }
+    } catch (error: unknown) {
+      return rejectWithValue(extractErrorMessage(error, 'Failed to delete property'));
     }
   }
 );
@@ -113,6 +163,21 @@ const propertySlice = createSlice({
         state.error = action.payload as string;
         toastService.error(action.payload as string);
       })
+      // Fetch property by ID
+      .addCase(fetchPropertyById.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchPropertyById.fulfilled, (state, action: PayloadAction<Property>) => {
+        state.isLoading = false;
+        state.currentProperty = action.payload;
+        state.error = null;
+      })
+      .addCase(fetchPropertyById.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+        toastService.error(action.payload as string);
+      })
       // Create property (owner)
       .addCase(createProperty.pending, (state) => {
         state.isLoading = true;
@@ -140,6 +205,39 @@ const propertySlice = createSlice({
         state.error = null;
       })
       .addCase(leaveProperty.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+        toastService.error(action.payload as string);
+      })
+      // Update property
+      .addCase(updateProperty.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(updateProperty.fulfilled, (state, action: PayloadAction<Property>) => {
+        state.isLoading = false;
+        const index = state.properties.findIndex(property => property.id === action.payload.id);
+        if (index !== -1) {
+          state.properties[index] = action.payload;
+        }
+        state.error = null;
+      })
+      .addCase(updateProperty.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+        toastService.error(action.payload as string);
+      })
+      // Delete property
+      .addCase(deleteProperty.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(deleteProperty.fulfilled, (state, action: PayloadAction<number>) => {
+        state.isLoading = false;
+        state.properties = state.properties.filter(property => property.id !== action.payload);
+        state.error = null;
+      })
+      .addCase(deleteProperty.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
         toastService.error(action.payload as string);

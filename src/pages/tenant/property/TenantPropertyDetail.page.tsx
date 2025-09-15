@@ -17,9 +17,8 @@ import './TenantPropertyDetail.css';
 import { GroupCard } from '../../../components/group/GroupCard';
 import { useParams } from 'react-router';
 import { useEffect, useState } from 'react';
-import { Property } from '../../../types/property';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
-import { fetchPropertyAdById } from '../../../store/slices/propertyAdSlice';
+import { fetchPropertyById } from '../../../store/slices/propertySlice';
 import { showLoadingSpinner, stopLoadingSpinner } from '../../../utils/spinnerUtils';
 import { createJoinRequest } from '../../../store/slices/propertyJoinRequestSlice';
 import PageHeader from '../../../components/common/PageHeader';
@@ -34,10 +33,9 @@ const TenantPropertyDetail: React.FC = () => {
   const dispatch = useAppDispatch();
   const history = useHistory();
   const { user, refreshUserProfile } = useAuth();
-  const { currentPropertyAd: ad } = useAppSelector((state) => state.propertyAd);
+  const { currentProperty: property } = useAppSelector((state) => state.property);
   const availableGroups = useAppSelector(selectAvailableGroups);
   const groupsLoading = useAppSelector(selectGroupIsLoading);
-  const property = ad?.Property as unknown as Property | null;
   const [showConfirm, setShowConfirm] = useState(false);
   const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
 
@@ -45,7 +43,7 @@ const TenantPropertyDetail: React.FC = () => {
     const load = async () => {
       showLoadingSpinner('Loading property...');
       try {
-        await dispatch(fetchPropertyAdById(parseInt(id, 10)));
+        await dispatch(fetchPropertyById(parseInt(id, 10)));
       } finally {
         stopLoadingSpinner();
       }
@@ -122,14 +120,19 @@ const TenantPropertyDetail: React.FC = () => {
           </IonNote>
           <br />
           <IonText className='ion-text-wrap'>
-            <p>
+            <p className='m-0'>
               {property?.space_available} remaining spaces available
             </p>
           </IonText>
+          {property?.monthly_rent_per_person && (
+            <IonChip color="primary" className='mb-3'>
+              {property?.monthly_rent_per_person} monthly rent per person
+            </IonChip>
+          )}
         </div>
         <div className='ion-padding-horizontal'>
           <IonText className='ion-text-wrap'>
-            <p>
+            <p className='m-0'>
             {property?.description}
             </p>
           </IonText>
@@ -192,7 +195,14 @@ const TenantPropertyDetail: React.FC = () => {
             text: 'Yes',
             role: 'confirm',
             handler: async () => {
-              const result = await dispatch(createJoinRequest({ property_ad_id: parseInt(id, 10) }));
+              // Get the first active property ad for this property
+              const activePropertyAd = property?.PropertyAds?.find(ad => ad.is_active);
+              if (!activePropertyAd) {
+                console.error('No active property ad found for this property');
+                return;
+              }
+              
+              const result = await dispatch(createJoinRequest({ property_ad_id: activePropertyAd.id }));
               if (createJoinRequest.fulfilled.match(result)) {
                 // Fetch updated profile to get new property_id
                 await refreshUserProfile();

@@ -6,20 +6,28 @@ export interface PropertyJoinRequest {
   tenant_id: number;
   status: JoinRequestStatus;
   move_in_date?: string | null;
-  created_at: string;
-  updated_at: string;
+  createdAt: string;
+  updatedAt: string;
   // Optional expanded relations
-  propertyAd?: {
+  PropertyAd?: {
     id: number;
     property_id: number;
     number_of_spaces_looking_for: number;
     is_active: boolean;
-    property?: {
+    Property?: {
       id: number;
       name: string;
       address: string;
       space_available: number;
       property_image?: string | null;
+      Owner?: {
+        id: number;
+        user_id: number;
+        User?: {
+          id: number;
+          full_name: string;
+        }
+      }
     }
   };
   tenant?: {

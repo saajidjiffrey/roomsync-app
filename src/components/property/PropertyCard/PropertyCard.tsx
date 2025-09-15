@@ -5,15 +5,14 @@ import './PropertyCard.css';
 
 interface PropertyCardProps {
   property: Property;
+  onEdit?: (property: Property) => void;
+  onDelete?: (property: Property) => void;
 }
 
-const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
+const PropertyCard: React.FC<PropertyCardProps> = ({ property, onEdit, onDelete }) => {
 
   return (
     <IonItemSliding>
-      <IonItemOptions side="start">
-        <IonItemOption color="success">Archive</IonItemOption>
-      </IonItemOptions>
       <IonItem button={true} detail={true} routerLink={`/owner/property-details/${property.id}`} routerDirection='forward'>
         <IonAvatar aria-hidden="true" slot="start" className='property-avatar ion-align-self-start avatar-square'>
           <img alt="" src={property.property_image || "/images/property_placeholder.jpg"} />
@@ -44,8 +43,16 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
         </IonLabel>
       </IonItem>
       <IonItemOptions side="end">
-        <IonItemOption>Favorite</IonItemOption>
-        <IonItemOption color="danger">Delete</IonItemOption>
+        {onEdit && (
+          <IonItemOption color="primary" onClick={() => onEdit(property)}>
+            Edit
+          </IonItemOption>
+        )}
+        {onDelete && (
+          <IonItemOption color="danger" onClick={() => onDelete(property)}>
+            Delete
+          </IonItemOption>
+        )}
       </IonItemOptions>
     </IonItemSliding>
   );

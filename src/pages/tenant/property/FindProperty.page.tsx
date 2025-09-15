@@ -1,5 +1,5 @@
 import { IonContent, IonFab, IonFabButton, IonHeader, IonLabel, IonList, IonPage, IonTitle, IonToolbar, IonText } from "@ionic/react"
-import PropertyAd from "../../../components/property/PropertyAd/PropertyAd"
+import PropertyAdSimple from "../../../components/property/PropertyAd/PropertyAdSimple"
 import PageHeader from "../../../components/common/PageHeader"
 import { useEffect } from "react"
 import { showLoadingSpinner, stopLoadingSpinner } from "../../../utils/spinnerUtils"
@@ -40,7 +40,7 @@ const FindProperty = () => {
           ) : (
             <IonList lines='inset' inset={true}>
               {propertyAds.map((ad) => (
-                <PropertyAd key={ad.id} ad={ad} />
+                <PropertyAdSimple key={ad.id} ad={ad} />
               ))}
             </IonList>
           )}

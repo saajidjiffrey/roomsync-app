@@ -12,9 +12,16 @@ export interface Property {
   space_available: number;
   property_image?: string;
   tags?: string[];
+  monthly_rent_per_person?: number;
   owner_id: number;
   created_at: string;
   updated_at: string;
+  PropertyAds?: Array<{
+    id: number;
+    property_id: number;
+    number_of_spaces_looking_for: number;
+    is_active: boolean;
+  }>;
 }
 
 export interface CreatePropertyRequest {
@@ -28,6 +35,7 @@ export interface CreatePropertyRequest {
   space_available: number;
   property_image?: string;
   tags?: string[];
+  monthly_rent_per_person?: number;
 }
 
 // Property state interface for Redux store

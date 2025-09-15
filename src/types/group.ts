@@ -26,6 +26,7 @@ export interface Group {
   max_members?: number;
   is_joined?: boolean;
   members?: GroupMember[];
+  Tenants?: GroupMember[];
   created_by_user?: {
     id: number;
     full_name: string;

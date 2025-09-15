@@ -6,16 +6,26 @@ import { useAppSelector } from '../../../store/hooks';
 
 type Props = {
   ad: PropertyAdType;
+  onToggleStatus?: (ad: PropertyAdType) => void;
+  onDelete?: (ad: PropertyAdType) => void;
 };
 
-const PropertyAd: React.FC<Props> = ({ ad }) => {
+const PropertyAd: React.FC<Props> = ({ ad, onToggleStatus, onDelete }) => {
   const role = useAppSelector((state) => state.auth.user?.role);
-  const detailsPath = role === 'owner' ? `/owner/property-details/${ad.property_id}` : `/tenant/property-details/${ad.id}`;
+  const detailsPath = role === 'owner' ? `/owner/property-details/${ad.property_id}` : `/tenant/property-details/${ad.property_id}`;
+  
   return (
     <IonItemSliding>
-      <IonItemOptions side="start">
-        <IonItemOption color="success">Archive</IonItemOption>
-      </IonItemOptions>
+      {onToggleStatus && (
+        <IonItemOptions side="start">
+          <IonItemOption 
+            color={ad.is_active ? "warning" : "success"} 
+            onClick={() => onToggleStatus(ad)}
+          >
+            {ad.is_active ? 'Deactivate' : 'Activate'}
+          </IonItemOption>
+        </IonItemOptions>
+      )}
       <IonItem button={true} detail={true} routerLink={detailsPath} routerDirection='forward'>
         <IonAvatar aria-hidden="true" slot="start" className='property-avatar ion-align-self-start avatar-square'>
           <img alt="" src={ad.Property?.property_image ||"/images/ad_placeholder.jpg"} />
@@ -36,10 +46,13 @@ const PropertyAd: React.FC<Props> = ({ ad }) => {
           </IonChip>
         </IonLabel>
       </IonItem>
-      <IonItemOptions side="end">
-        <IonItemOption>Favorite</IonItemOption>
-        <IonItemOption color="danger">Delete</IonItemOption>
-      </IonItemOptions>
+      {onDelete && (
+        <IonItemOptions side="end">
+          <IonItemOption color="danger" onClick={() => onDelete(ad)}>
+            Delete
+          </IonItemOption>
+        </IonItemOptions>
+      )}
     </IonItemSliding>
   );
 };

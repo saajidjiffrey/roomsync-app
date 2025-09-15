@@ -22,8 +22,6 @@ import {
   IonSkeletonText,
   IonSelect,
   IonSelectOption,
-  IonCard,
-  IonCardContent,
   IonRefresher,
   IonRefresherContent,
   useIonActionSheet
@@ -99,7 +97,6 @@ const Tasks: React.FC = () => {
   };
 
   const handleTaskStatusToggle = async (taskId: number, currentStatus: boolean) => {
-    const action = currentStatus ? 'mark as incomplete' : 'complete';
     const header = currentStatus ? 'Mark as Incomplete' : 'Complete Task';
     const subHeader = currentStatus 
       ? 'Are you sure you want to mark this task as incomplete?' 
@@ -204,13 +201,22 @@ const Tasks: React.FC = () => {
               <h2>Please join a property</h2>
               <p>You need to join a property to access task features.</p>
             </IonText>
-            <IonButton 
-              expand="block" 
-              onClick={() => history.push('/tenant/find-property')}
-              className="ion-margin-top"
-            >
-              Find Property
-            </IonButton>
+            <div className="ion-margin-top">
+              <IonButton 
+                expand="block" 
+                onClick={() => history.push('/tenant/find-property')}
+                className="ion-margin-bottom"
+              >
+                Find Property
+              </IonButton>
+              <IonButton 
+                expand="block" 
+                fill="outline"
+                onClick={() => history.push('/tenant/my-requests')}
+              >
+                View My Requests
+              </IonButton>
+            </div>
           </div>
         </IonContent>
       </IonPage>
@@ -254,31 +260,25 @@ const Tasks: React.FC = () => {
         </IonRefresher>
         {/* Task Statistics Cards */}
         {statistics && (
-          <div className="ion-padding">
+          <div className="p-3">
             <div className="row g-2">
               <div className="col-4">
-                <IonCard className='ion-no-margin'>
-                  <IonCardContent className="ion-text-center ion-padding">
-                    <IonLabel className="d-block ion-margin-bottom">Total</IonLabel>
-                    <h2 className="ion-no-margin">{statistics.total}</h2>
-                  </IonCardContent>
-                </IonCard>
+                <div className="card p-1 bg-primary text-white text-center">
+                  <IonLabel className="d-block mb-2">Total</IonLabel>
+                  <h4 className="mb-0">{statistics.total}</h4>
+                </div>
               </div>
               <div className="col-4">
-                <IonCard className='ion-no-margin'>
-                  <IonCardContent className="ion-text-center ion-padding">
-                    <IonLabel className="d-block ion-margin-bottom">Completed</IonLabel>
-                    <h2 className="ion-no-margin text-success">{statistics.completed}</h2>
-                  </IonCardContent>
-                </IonCard>
+                <div className="card p-1 bg-success text-white text-center">
+                  <IonLabel className="d-block mb-2">Completed</IonLabel>
+                  <h4 className="mb-0">{statistics.completed}</h4>
+                </div>
               </div>
               <div className="col-4">
-                <IonCard className='ion-no-margin'>
-                  <IonCardContent className="ion-text-center ion-padding">
-                    <IonLabel className="d-block ion-margin-bottom">Pending</IonLabel>
-                    <h2 className="ion-no-margin text-warning">{statistics.pending}</h2>
-                  </IonCardContent>
-                </IonCard>
+                <div className="card p-1 bg-warning text-dark text-center">
+                  <IonLabel className="d-block mb-2">Pending</IonLabel>
+                  <h4 className="mb-0">{statistics.pending}</h4>
+                </div>
               </div>
             </div>
           </div>
@@ -334,7 +334,7 @@ const Tasks: React.FC = () => {
                   </IonItem>
                 ) : (
                   filteredIncompleteTasks.map((task) => (
-                    <IonItem key={task.id} button>
+                    <IonItem key={task.id}>
                       <IonAvatar slot="start">
                         <img src={task.assignedTenant?.User?.profile_url || "/images/user_placeholder.jpg"} alt="" />
                       </IonAvatar>
@@ -349,11 +349,12 @@ const Tasks: React.FC = () => {
                           </p>
                         )}
                       </IonLabel>
-                        <div className='d-flex gap-2' slot='end'>
-                          <IonChip className='gap-2' color={getPriorityColor(task.priority)}>
-                            <IonIcon icon={getPriorityIcon(task.priority)} />
-                            {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
-                          </IonChip>
+                      <div slot="end" className="ion-text-end">
+                        <IonChip className="mb-1" color={getPriorityColor(task.priority)}>
+                          <IonIcon className='me-1' icon={getPriorityIcon(task.priority)} />
+                          {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
+                        </IonChip>
+                        <div className="d-flex gap-2 justify-content-end">
                           {task.assigned_to === tenantId && (
                             <IonButton 
                               size="small" 
@@ -373,6 +374,7 @@ const Tasks: React.FC = () => {
                             </IonButton>
                           )}
                         </div>
+                      </div>
                     </IonItem>
                   ))
                 )}
@@ -401,7 +403,7 @@ const Tasks: React.FC = () => {
                   </IonItem>
                 ) : (
                   filteredCompletedTasks.map((task) => (
-                    <IonItem key={task.id} button>
+                    <IonItem key={task.id}>
                       <IonAvatar slot="start">
                         <img src={task.assignedTenant?.User?.profile_url || "/images/user_placeholder.jpg"} alt="" />
                       </IonAvatar>
@@ -413,20 +415,22 @@ const Tasks: React.FC = () => {
                           <p>Due: {formatDate(task.due_date)}</p>
                         )}
                       </IonLabel>
-                      <div className='d-flex gap-2' slot='end'>
-                        <IonChip className='gap-2' color={getPriorityColor(task.priority)}>
-                          <IonIcon icon={getPriorityIcon(task.priority)} />
+                      <div slot="end" className="ion-text-end">
+                        <IonChip className="mb-1" color={getPriorityColor(task.priority)}>
+                          <IonIcon className='me-1' icon={getPriorityIcon(task.priority)} />
                           {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
                         </IonChip>
-                        {task.created_by === tenantId && task.assigned_to !== tenantId && (
-                          <IonButton 
-                            size="small" 
-                            color="danger" 
-                            onClick={() => handleDeleteTask(task.id)}
-                          >
-                            <IonIcon icon={trash} />
-                          </IonButton>
-                        )}
+                        <div className='d-flex gap-2 justify-content-end'>
+                          {task.created_by === tenantId && task.assigned_to !== tenantId && (
+                            <IonButton 
+                              size="small" 
+                              color="danger" 
+                              onClick={() => handleDeleteTask(task.id)}
+                            >
+                              <IonIcon icon={trash} />
+                            </IonButton>
+                          )}
+                        </div>
                       </div>
                     </IonItem>
                   ))

@@ -41,6 +41,6 @@ export const propertyAPI = {
 
   // Leave property (tenant)
   leaveProperty: async (propertyId: number): Promise<ApiResponse> => {
-    return apiService.post(`/property/${propertyId}/leave`);
+    return apiService.post(`/property/leave/${propertyId}`);
   },
 };

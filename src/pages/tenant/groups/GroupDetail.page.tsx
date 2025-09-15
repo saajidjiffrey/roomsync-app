@@ -58,7 +58,13 @@ const GroupDetail: React.FC = () => {
   const displayGroup = currentGroup || myGroups?.find(g => g.id === groupId) || myGroups?.[0];
   
   // Check if user is a member of this group
-  const isGroupMember = displayGroup?.members?.some(member => member.user_id === user?.id);
+  const isGroupMember = displayGroup?.Tenants?.some(tenant => tenant.User?.id === user?.id);
+  console.log('groupId', groupId);
+  console.log('userGroupId', userGroupId);
+  console.log('urlGroupId', urlGroupId);
+  console.log('currentGroup', currentGroup);
+  console.log('displayGroup', displayGroup);
+  console.log('isGroupMember', isGroupMember);
   
   // Check if user has unpaid splits
   const hasUnpaidSplits = toPaySplits && toPaySplits.length > 0;
@@ -131,7 +137,7 @@ const GroupDetail: React.FC = () => {
                   </div>
                   <div className="col-12 col-md-3">
                     <strong>Members</strong>
-                    <p className="mb-0">{displayGroup.member_count ?? displayGroup.members?.length ?? 0}</p>
+                    <p className="mb-0">{displayGroup.member_count ?? displayGroup.Tenants?.length ?? 0}</p>
                   </div>
                 </div>
               </div>
@@ -150,20 +156,20 @@ const GroupDetail: React.FC = () => {
                 <IonSkeletonText animated style={{ width: '100%', height: '4rem' }} />
               </IonItem>
             ))
-          ) : (displayGroup?.members || []).length === 0 ? (
+          ) : (displayGroup?.Tenants || []).length === 0 ? (
             <IonItem>
               <IonLabel>No members found</IonLabel>
             </IonItem>
           ) : (
-            displayGroup!.members!.map(member => (
-              <IonItem key={member.id} button={true} detail={true}>
+            displayGroup!.Tenants!.map(member => (
+              <IonItem key={member.User?.id} button={true} detail={true}>
                 <IonAvatar aria-hidden="true" slot="start" className='user-avatar ion-align-self-start avatar-square'>
                   <img alt="" src={'/images/user_placeholder.jpg'} />
                 </IonAvatar>
                 <IonLabel className='ion-align-self-start'>
-                  <strong>{member.User?.full_name || `Tenant #${member.id}`}</strong>
+                  <strong>{member.User?.full_name || `Tenant #${member.User?.id}`}</strong>
                   <div>
-                    <IonChip color="primary">{member.User?.email || 'Member'}</IonChip>
+                    <IonChip color="primary">{member.User?.email || 'Tenant'}</IonChip>
                   </div>
                 </IonLabel>
               </IonItem>

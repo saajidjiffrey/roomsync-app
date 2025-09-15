@@ -32,6 +32,7 @@ interface FormErrors {
   space_available?: string;
   property_image?: string;
   tags?: string;
+  monthly_rent_per_person?: string;
 }
 
 const CreatePropertyModal = ({ dismiss }: { dismiss: (data?: string | null | undefined | number, role?: string) => void }) => {
@@ -48,7 +49,8 @@ const CreatePropertyModal = ({ dismiss }: { dismiss: (data?: string | null | und
     description: '',
     space_available: '',
     property_image: '',
-    tags: [] as string[]
+    tags: [] as string[],
+    monthly_rent_per_person: ''
   });
   const [newTag, setNewTag] = useState('');
   const [presentActionSheet] = useIonActionSheet();
@@ -144,6 +146,14 @@ const CreatePropertyModal = ({ dismiss }: { dismiss: (data?: string | null | und
       newErrors.tags = 'At least one tag is required';
     }
     
+    // Validate monthly rent per person (optional but if provided, should be valid)
+    if (formData.monthly_rent_per_person.trim()) {
+      const rentAmount = parseFloat(formData.monthly_rent_per_person.trim());
+      if (isNaN(rentAmount) || rentAmount < 0) {
+        newErrors.monthly_rent_per_person = 'Monthly rent must be a valid positive number';
+      }
+    }
+    
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -165,6 +175,9 @@ const CreatePropertyModal = ({ dismiss }: { dismiss: (data?: string | null | und
         space_available: parseInt(formData.space_available.trim(), 10),
         property_image: formData.property_image || undefined,
         tags: formData.tags,
+        monthly_rent_per_person: formData.monthly_rent_per_person.trim() 
+          ? parseFloat(formData.monthly_rent_per_person.trim()) 
+          : undefined,
         coordinates: formData.coordinates.latitude !== 0 && formData.coordinates.longitude !== 0 
           ? formData.coordinates 
           : undefined
@@ -207,7 +220,7 @@ const CreatePropertyModal = ({ dismiss }: { dismiss: (data?: string | null | und
           <IonImg
             src={formData.property_image || "/images/property_placeholder.jpg"}
             alt="Property Image"
-            style={{ height: '200px', objectFit: 'cover' }}
+            style={{ height: '200px', objectFit: 'cover', objectPosition: 'center' }}
           />
           <IonButton
             fill="solid"
@@ -286,6 +299,20 @@ const CreatePropertyModal = ({ dismiss }: { dismiss: (data?: string | null | und
               className={errors.space_available ? 'ion-invalid ion-touched' : ''}
             />
             {errors.space_available && <IonLabel color="danger" style={{ fontSize: '0.8rem' }}>{errors.space_available}</IonLabel>}
+          </IonItem>
+          
+          <IonItem>
+            <IonInput 
+              labelPlacement="stacked" 
+              mode='md' 
+              type='number' 
+              label="Monthly Rent per Person (Optional)" 
+              placeholder="Enter monthly rent amount"
+              value={formData.monthly_rent_per_person}
+              onIonInput={(e) => handleInputChange('monthly_rent_per_person', e.detail.value!)}
+              className={errors.monthly_rent_per_person ? 'ion-invalid ion-touched' : ''}
+            />
+            {errors.monthly_rent_per_person && <IonLabel color="danger" style={{ fontSize: '0.8rem' }}>{errors.monthly_rent_per_person}</IonLabel>}
           </IonItem>
         </IonList>
 
